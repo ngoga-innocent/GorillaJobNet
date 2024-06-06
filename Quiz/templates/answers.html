@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gorilla Job Net - Exam</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="{% static 'images/favicon.ico' %}"
+    />
+    <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
+    <script>
+      function openFullscreen() {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch((err) => {
+            alert(
+              `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+            );
+          });
+        } else if (elem.mozRequestFullScreen) {
+          /* Firefox */
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+          /* Chrome, Safari & Opera */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          /* IE/Edge */
+          elem.msRequestFullscreen();
+        }
+      }
+
+      function closeFullscreen() {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          /* Firefox */
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+          /* Chrome, Safari & Opera */
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          /* IE/Edge */
+          document.msExitFullscreen();
+        }
+      }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+
+  <body class="flex flex-col items-center" id="">
+    <div class="flex flex-row items-center gap-x-2">
+      <h2 class="font-bold text-xl">
+        {{quiz_name}}
+      </h2>
+      <p>Answers</p>
+    </div>
+    <div>
+      {% if quiz_questions %}
+      <div>
+        {% for question in quiz_questions %}
+        <div class="my-4">
+          <h4 class="font-bold">{{ forloop.counter }}.{{ question.text }}</h4>
+          {% for answer in question.get_question_answer %}
+          <div class="mx-7">
+            {% if answer.correct %}
+            <div class="flex flex-row gap-x-3 justify-between items-center">
+              <p>{{forloop.counter}}. {{answer.text}}</p>
+              <div class="flex flex-row items-center mx-2">
+                <div
+                  class="w-6 h-6 rounded-full items-center flex flex-col justify-center bg-green-500"
+                >
+                  <i
+                    class="fa fa-check"
+                    aria-hidden="true"
+                    style="color: white;"
+                  ></i>
+                </div>
+                <p>Correct Answer</p>
+              </div>
+            </div>
+            {% else %}
+            <div class="py-2">{{forloop.counter}}.{{answer.text}}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p>Sorry, Unknown Error, check your internet and Try again</p>
+      {% endif %}
+    </div>
+    <script src="{% static 'Js/script.js' %}"></script>
+  </body>
+</html>

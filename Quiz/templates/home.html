@@ -1,0 +1,81 @@
+{% extends 'tailwindbase.html' %} {% load static %} {% block content %}
+<div class="flex flex-col items-center justify-center py-8" id="header_div">
+  <h2>WELCOME TO GORILLA JOB NET EXAM PORTAL</h2>
+  <div
+    class="flex flex-row items-center rounded-full bg-white w-[90%] md:w-[50%] border py-2 px-3 my-5"
+  >
+    <i class="fa-solid fa-magnifying-glass" style="color: gray;"></i>
+    <input
+      type="text"
+      name="search"
+      id="search_query"
+      class="search_query w-[80%] mx-2"
+      style="border: none;"
+      placeholder="Search Equivalent Department"
+    />
+  </div>
+</div>
+<div class="flex flex-col w-[98%] mx-auto">
+  <h2 class="text-center font-bold my-3 md:text-2xl">Available Department</h2>
+  <div id="faculity-list">
+    {% if faculties %}
+    <div id="faculty-list" class="grid md:grid-cols-6 gap-3 sm:mx-4">
+      {% for faculty in faculties %}
+      <div
+        class="rounded-lg py-2 px-2 md:w-[100%] flex flex-col w-[60%] mx-auto relative"
+        id="faculity"
+      >
+        {% if faculty.thumbnail %}
+        <img
+          src="{{faculty.thumbnail.url}}"
+          alt=""
+          class="w-20 h-20 rounded-full"
+        />
+        {% else %}
+        <img
+          src="{% static 'images/logo.jpg' %}"
+          alt=""
+          class="w-20 h-20 rounded-full"
+        />
+
+        {% endif %}
+
+        <a
+          class="hover:cursor-pointer text-white font-bold"
+          href="{% url 'faculty_quizes' faculty.id %}"
+          >{{ faculty.name }}</a
+        >
+        <div
+          class="absolute top-2 right-1 bg-orange-200 text-white text-center rounded-md px-1"
+        >
+          {{faculty.get_faculty_quizzes.count}}
+        </div>
+        <div class="hidden md:block">
+          <p>{{faculty.description }} ...</p>
+        </div>
+        <div
+          class="absolute right-1 bottom-2 gap-x-1 flex flex-row items-center"
+        >
+          <a
+            class="hover:cursor-pointer text-orange-300"
+            href="{% url 'faculty_quizes' faculty.id %}"
+            >View Quiz</a
+          >
+
+          <i
+            class="fa fa-arrow-right"
+            style="color: white;"
+            aria-hidden="true"
+          ></i>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>
+      No available Faculties please be Patient Our Team is taking care of it
+    </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

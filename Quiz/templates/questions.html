@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gorilla Job Net - Exam</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="{% static 'images/favicon.ico' %}"
+    />
+    <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
+    <script>
+      function openFullscreen() {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch((err) => {
+            alert(
+              `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+            );
+          });
+        } else if (elem.mozRequestFullScreen) {
+          /* Firefox */
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+          /* Chrome, Safari & Opera */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          /* IE/Edge */
+          elem.msRequestFullscreen();
+        }
+      }
+
+      function closeFullscreen() {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          /* Firefox */
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+          /* Chrome, Safari & Opera */
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          /* IE/Edge */
+          document.msExitFullscreen();
+        }
+      }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
+  </head>
+
+  <body class="flex flex-col items-center justify-center bg-gray-100">
+    <button onclick="openFullscreen()">Start Quiz</button>
+    <button onclick="closeFullscreen()">Exit Fullscreen</button>
+    <form
+      id="quiz_container"
+      class="flex flex-col items-center justify-center bg-white p-6 rounded-md shadow-md w-full h-[100%] overflow-y-scroll"
+    >
+      {% csrf_token %}
+      <div
+        class="bg-white py-4 px-4 rounded-lg flex flex-col items-start justify-center min-w-[40%] relative"
+      >
+        <div class="self-start flex flex-col">
+          {% for question in page_obj %}
+          <div class="mb-6 w-[100%] items-center justify-center">
+            <p class="text-lg font-semibold">
+              {{ page_obj.number }}.{{ question.text }}
+            </p>
+            <div class="my-6">
+              {% for answer in question.get_question_answer %}
+              <div class="flex flex-row gap-x-2">
+                <input
+                  type="radio"
+                  name="{{question.id}}"
+                  value="{{answer.id}}"
+                />
+                <p class="ml-4 text-gray-700">{{ answer.text }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <button
+            id="submit_question"
+            data-questionId="{{question.id}}"
+            class="py-2 px-2 bg-green-400 rounded-md items-center text-white absolute left-2 bottom-2"
+          >
+            Save
+          </button>
+          <div class="hidden" id="next_previous">
+            {% if page_obj.has_previous %}
+
+            <button
+              id=""
+              data-questionId="{{question.id}}"
+              class="py-2 px-2 bg-green-400 rounded-md items-center text-white absolute left-2 bottom-2"
+            >
+              <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </button>
+            {% endif %} {% if page_obj.has_next %}
+            <button
+              id=""
+              data-questionId="{{question.id}}"
+              type="submit"
+              class="bg-blue-400 py-2 px-2 rounded-md text-white self-end absolute bottom-2 right-2"
+            >
+              <a href="?page={{ page_obj.paginator.num_pages }}">Next</a>
+            </button>
+            {% else %}
+            <button
+              id="Get_results"
+              data-quizId="{{question.quiz.id}}"
+              type="submit"
+              class="bg-blue-400 py-2 px-2 rounded-md text-white self-end absolute bottom-2 right-2"
+            >
+              <a href="?page={{ page_obj.paginator.num_pages }}">Submit</a>
+            </button>
+            {% endif %} {% endfor %}
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="hidden spinnerContainer w-full min-h-screen">
+      <div class="spinner"></div>
+    </div>
+    <div
+      class="hidden self-center items-center justify-center flex flex-col w-full bg-gray-200 min-h-screen"
+      id="results"
+    ></div>
+    <script src="{% static 'Js/script.js' %}"></script>
+  </body>
+</html>

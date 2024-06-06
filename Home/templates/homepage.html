@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block title %} Gorilla Job Net {% endblock title %}
+{% load static %} {% block content %}
+<div class="container" id="home">
+  <div class="align-items-center justify-content-center">
+    <h2 id="header" class="my-5">Take Online Exam</h2>
+    <h3 id="second-header">NUMBER OF ACTIVE USERS RIGHT NOW</h3>
+    <h4 id="number">200+</h4>
+  </div>
+  <div>
+    <img src="{% static 'images/bitmap.png' %}" alt="" />
+  </div>
+  <button class="btn btn-primary btn-lg">
+    <a href="{% url 'quiz_home' %}" class="nav-link">Explore Our Exams</a>
+  </button>
+</div>
+{% endblock content %}

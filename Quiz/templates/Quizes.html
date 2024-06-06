@@ -1,0 +1,41 @@
+{% extends 'tailwindbase.html' %} {% load static %} {% block content %}
+<div class="grid md:grid-cols-6 gap-3 md:gap-6 my-4 items-center px-8">
+  {% for quiz in quizes %}
+  <div id="faculity" class="rounded-md py-4 px-3 relative">
+    <div class="my-3 flex flex-col md:flex-row justify-between">
+      <a href="{% url 'quiz_questions' quiz.id %}" class="my-3"
+        >{{ quiz.name }}</a
+      >
+      <p class="text-xs text-white right-2 bottom-2 my-2 max-w-[20%] px-1">
+        Qns {{quiz.number_of_questions }}
+      </p>
+    </div>
+
+    <button
+      class="start-button px-3 py-2 rounded-md bg-blue-300 text-white font-bold"
+      data-quiz-id="{{ quiz.id }}"
+      data-quiz-name="{{ quiz.name }}"
+      data-quiz-questions="{{ quiz.number_of_questions }}"
+    >
+      Start Now
+    </button>
+  </div>
+  {% endfor %}
+</div>
+<div
+  id="modal-container"
+  class="modal-container w-full flex flex-col min-h-screen z-30 transition-all ease-in-out duration-5000 duration-5000 hidden"
+>
+  <div
+    class="self-center bg-white shadow-md shadow-black z-20 absolute top-3 py-2 px-3 rounded-md min-w-[30%] items-center"
+  >
+    <div class="shadow-md shadow-b-black z-10 py-2 px-3">
+      <h2 class="text-sm text-gray-500" id="modal-header"></h2>
+    </div>
+
+    <div id="modal-content" class="my-2"></div>
+    <div id="modal-footer" class="flex flex-row gap-3 self-end mt-4 mb-1"></div>
+  </div>
+</div>
+
+{% endblock content %}

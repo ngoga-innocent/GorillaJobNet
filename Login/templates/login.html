@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% load static %} {% block content %} <br />
+<div
+  id=""
+  class="w-full items-center flex flex-col justify-center min-h-screen"
+>
+  <div
+    id="box"
+    class="flex flex-col self-center items-center w-[50%] shadow-md shadow-black py-12 rounded-md"
+  >
+    <h4 class="font-bold text-lg">Let Sign You In</h4>
+    <p>Welcome Back, You have been Missed</p>
+    <form
+      action="{% url 'login' %}"
+      method="post"
+      class="form-group flex flex-col w-[100%] px-2"
+    >
+      {% csrf_token %}
+      <input
+        type="text"
+        name="username"
+        id=""
+        class="my-2 w-[100%] py-2 rounded-md bg-white px-3"
+        placeholder="Email,Phone,username"
+      />
+      <input
+        type="password"
+        name="password"
+        id=""
+        class="form-control"
+        placeholder="Password"
+      />
+      {% for message in messages %}
+      <p>{{ message }}</p>
+      {% endfor %}
+      <button
+        type="submit"
+        class="w-[100%] py-2 items-center bg-blue-500 text-white my-2 rounded-md"
+      >
+        Login
+      </button>
+    </form>
+    <div class="flex gap-x-2">
+      <p>Don't have an account?</p>
+      <a href="{% url 'signup' %}" class="text-blue-300">signup</a>
+    </div>
+  </div>
+</div>
+{% endblock content %}

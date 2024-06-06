@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gorilla Job Net - Exam</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="{% static 'images/favicon.ico' %}"
+    />
+    <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body class="">
+    <div class="hidden md:block md:flex md:flex-row shadow-b-black shadow-md mb-1 py-2 justify-between px-2 items-center">
+        <a href="{% url 'homepage' %}">
+          <img
+            src="{% static 'images/logo.jpg' %}"
+            alt=""
+            class="w-20 h-20 rounded-full"
+          />
+        </a>
+        <div><h1 class="text-2xl font-bold">Gorilla Job Net</h1></div>
+        <div class="flex flex-row items-center mr-20">
+          <a href="{% url 'homepage' %}">Home</a>
+          
+        </div>
+      </div>
+    </div>
+    
+    {% block hero %}
+        
+    {% endblock hero %}
+        
+    <div id="modal-container" class="hidden payment-modal items-center justify-center rounded-md flex flex-col">
+        <div class="w-[50%] bg-white py-4 rounded-md px-4 flex flex-col ">
+            <div class="flex flex-row items-center relative w-32 h-32 gap-x-2">
+              <img src="{% static 'images/mtn.jpg' %}" alt="" class="w-[85%] h-[85%] rounded-md">
+              <img src="{% static 'images/airtel.png' %}" class="w-[85%] rounded-md" alt="">
+            </div>
+
+            <form id="payment_form">
+              {% csrf_token %}
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="one" required type="radio">
+                <label for="">1 Exam</label>
+              </div>
+
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="day" required type="radio">
+                <label for="">Day Subscription on 5000</label>
+              </div>
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="week" required type="radio">
+                <label for="">Week Subscription on 10000</label>
+              </div>
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="month" required type="radio">
+                <label for="">Month Subscription on 20000</label>
+              </div>
+              <input type="number" name="Phone_number" required id="" class="bg-slate-100 py-2 rounded-md w-[70%] px-2 my-1 shadow-black shadow-sm" placeholder="Phone Number"> <br>
+              <div class="flex flex-row gap-x-1 items-center ">
+                <button type="submit" id="pay_Button" class="bg-green-500 px-4 py-2 text-white font-bold rounded-md ">
+                Pay Now
+              </button>
+              <div id="loader" class="spinner-1 hidden"></div>
+              </div>
+
+              
+            </form>
+        </div>
+    </div>
+    <div class="content">
+        {% block content %}
+        
+    {% endblock content %}
+    </div>
+    {% include "tailwindfooter.html" %}
+    <script src="{% static 'Js/script.js' %}"></script>
+  </body>
+</html>
+        
