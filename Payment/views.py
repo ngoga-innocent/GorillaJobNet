@@ -111,7 +111,7 @@ class PaymentView(View):
         
         url = f"{base_url}/transactions/cashin"
         payload =json.dumps({
-            "amount": 100,
+            "amount": amount,
             "number":phone
         })
         headers = {
