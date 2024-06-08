@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GorillaJobNet-Staff</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="{% static 'images/favicon.ico' %}"
+    />
+    <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+      .sidebar {
+        transition: all 0.3s ease-in-out;
+      }
+      .sidebar-hidden {
+        transform: translateX(-100%);
+      }
+      .menu-button {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .menu-button {
+          display: block;
+        }
+        .sidebar {
+          position: absolute;
+          z-index: 10;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-[#e1ecea]">
+    <div class="flex  flex-row gap-x-3">
+      <!-- <button
+        id="menu-button"
+        class="md:hidden menu-button p-2 text-white bg-green-500"
+      >
+        <i class="fa-solid fa-bars"></i>
+      </button> -->
+      <div id="sidebar" class="sidebar w-[18%] bg-white h-full py-5 relative">
+        <div class="flex flex-row justify-between items-center px-3">
+          <img
+            src="{% static 'images/logo.jpg' %}"
+            alt="Logo"
+            class="w-20 h-20 rounded-full"
+          />
+          <h3 class="font-bold">{% block Heading %}{% endblock Heading %}</h3>
+        </div>
+        <div class="mt-10 px-3">
+          <ul class="flex flex-col gap-y-2">
+            <li class="flex items-center gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+              <i class="fa-solid fa-gauge" style="color:#434544;font-size: small;"></i>
+              <a href="{% url 'staff_home' %}" class=" text-sm"
+                >Dashboard</a
+              >
+            </li>
+            <li class="flex items-center gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+              
+              <i class="fa-solid fa-f" style="color:#434544;font-size: small;"></i>
+              <a href="{% url 'faculity' %}" class=" text-sm"
+                >Faculity</a
+              >
+            </li>
+            <li class="flex items-center gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+              <i class="fa-solid fa-check-to-slot" style="color:#434544;font-size: small;"></i>
+              <a href="{% url 'add_exam' %}" class=" text-sm"
+                >Add Exam</a
+              >
+            </li>
+
+            <li class="flex items-center gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+              <i class="fa-solid fa-paperclip" style="color:#434544;font-size: small;"></i>
+              <a href="{% url 'logout' %}" class=" text-sm">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        class="flex flex-col w-[82%] min-h-screen max-h-screen overflow-y-scroll relative py-3"
+      >
+        <div class="flex flex-row gap-x-2 items-center mb-4 relative">
+          <input
+            type="text"
+            placeholder="Search"
+            class="bg-white rounded-md w-[60%] py-2 px-3 "
+          />
+          <div class="flex flex-row items-center gap-x-2">
+            <div class="py-2 px-4 rounded-md bg-green-500">
+              <i class="fa-solid fa-bell" style="color: white;"></i>
+            </div>
+            <div class="py-2 px-4 rounded-md bg-green-500">
+              <i class="fa-solid fa-gear"></i>
+            </div>
+            
+          </div>
+          <div class="absolute right-10 flex flex-row items-center gap-x-1">
+            <p>Hello,<p class="font-bold"> {{request.user}}</p></p>
+            <img
+              src="{% static 'images/avatar.svg' %}"
+              class="w-12 h-12 rounded-full"
+              alt=""
+            />
+          </div>
+        </div>
+        {% block content %} {% endblock content %}
+      </div>
+    </div>
+    <script src="{% static 'Js/staff.js' %}"></script>
+    <script>
+      $(document).ready(function () {
+        $("#menu-button").click(function () {
+          $("#sidebar").toggleClass("sidebar-hidden");
+        });
+      });
+    </script>
+  </body>
+</html>

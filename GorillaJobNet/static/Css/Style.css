@@ -80,7 +80,7 @@ input:focus {
     
 }
 .footer{
-    background-color:#91bed1 ;
+    background-color:#10644D ;
     padding: 40px 10px;
     display: flex;
     flex-direction: row;
@@ -159,12 +159,29 @@ input:focus {
     
 }
 }
+ /* .menu-container {
+            display: none;
+            transition: all 0.5s ease;
+        }
+        .menu-container.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .menu-container.hidden {
+            opacity: 0;
+            transform: translateX(100%);
+        } */
 #home{
     min-height: 100vh;
-    display: flex ;
+    /* display: flex ;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-between; */
     align-items: center;
+    background-image: url('../images/wave_bg.svg');
+    background-position: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 #header{
     font-size: 40px;
@@ -183,19 +200,20 @@ input:focus {
 #box{
     align-self: center;
     background-color: white;
-    width: 30%;
+    
     /* border-radius: 20px;
     box-shadow: 10px 10px 10px grey;
     z-index: 10; */
 }
 #faculity{
-    /* background-color: #333; */
-    background-image: linear-gradient(171deg, rgba(140,156,247,1) 91%, rgba(117,85,206,1) 100%),url('../images/bg_faculity.png');
+    background-color: #333;
+    background-image: radial-gradient(circle, rgba(13,90,69,1) 91%, rgba(13,90,69,1) 100%),url('../images/bg_faculity.png'); 
     background-repeat: no-repeat;
     background-size: cover;
 }
 #header_div{
- background-image: linear-gradient(171deg, rgba(140,156,247,1) 91%, rgba(117,85,206,1) 100%),url('../images/bg_faculity.png');
+    background-color: #10644D;
+    /* background-image: linear-gradient(171deg, rgba(140,156,247,1) 91%, rgba(117,85,206,1) 100%),url('../images/bg_faculity.png'); */
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -283,4 +301,11 @@ input:focus {
   backdrop-filter: blur(10px); /* Blur effect */
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   z-index: 999999999999999;
+}
+
+#answers{
+    background-image: url('../images/exam_bg.svg');
+    background-position: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 }

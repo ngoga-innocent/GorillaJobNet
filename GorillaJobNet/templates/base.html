@@ -10,56 +10,95 @@
     <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">    
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">  
+   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />  
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <title>
     {% block title %}
       
     {% endblock title %}
       </title>
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> 
+     
   </head>
   </head>
-  <body>
-    <div class="wrapper">
-      <div class="nav px-5 py-2">
-      <div >
+  <body id="">
+    <div class="wrapper relative">
+      <div class="flex flex-row justify-between items-center px-5 py-2 md:my-10">
+      <div>
         <img class="rounded-full logo " src="{% static 'images/logo.jpg' %}" alt="">
       </div>
-      <div>
-        <ul>
-          <li><a class="nav-link" href="{% url 'homepage' %}">Home</a></li>
-           <li><a class="nav-link" href="#">About</a></li>
-            <li><a class="nav-link" href="#">Service</a></li>
+      <button id="menu" class="md:hidden">
+        <i class="fa-solid fa-bars fa-lg" style="font-size: xx-large;" ></i>
+      </button>
+      
+        <ul class="hidden md:flex flex-col md:flex-row items-center gap-x-2">
+          <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'homepage' %}">Home</a></li>
+           <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="#">About</a></li>
+            <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="#">Service</a></li>
             {% if user.is_authenticated %}
             <div>
-              <ul>
-                <li class="nav-item">
-                  <button id="login" class="btn btn-primary bg-transparent hover:bg-primary">
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+              <ul class="flex flex-col item-center md:flex-row">
+                <li class="">
+                  <button id="login" class=" bg-transparent item-center justify-center px-2 py-2 bg-[#00cba9] rounded-md">
+                    <a class=" text-red-400" href="{% url 'logout' %}">Logout</a>
                   </button>
                 </li>
-                <li class="nav-item">
-                  <button class="btn btn-primary">{{user.username}}</button>
+                <li class="">
+                  <button class="btn btn-primary px-2 py-2 bg-[#10644D] rounded-md">{{user.username}}</button>
                 </li>
               </ul>
             </div>
             {% else %}
             <div>
-              <ul>
+              <ul class="flex flex-col item-center md:flex-row">
                 <li class="nav-item">
-                  <button id="login" class="btn btn-primary bg-transparent hover:bg-primary">
+                  <button id="login" class=" bg-transparent  justify-center px-2 py-2 bg-[#10644D] rounded-md">
                     <a class="nav-link" href="{% url 'login' %}">Login</a>
                   </button>
                 </li>
                 <li class="nav-item">
-                  <button class="btn btn-primary">Get Started</button>
+                  <button id="login" class=" justify-center px-2 py-2 bg-[#10644D] rounded-md">
+                    <a class="nav-link text-white" href="{% url 'signup' %}">Get Started</a>
+                  </button>
                 </li>
               </ul>
             </div> 
             {% endif %}
             
         </ul>
-      </div>
+       <ul id="menu_container" class="hidden bg-[#10644D] min-h-screen  absolute top-0 right-0 w-[50%] px-5 z-50 transition duration-8000 ease-in-out py-8 md:hidden flex-col md:flex-row items-center gap-x-2">
+          <li class="my-1"><a class=" text-white font-bold " href="{% url 'homepage' %}">Home</a></li>
+           <li class="my-1"><a class=" text-white font-bold " href="#">About</a></li>
+            <li class="my-1"><a class=" text-white font-bold " href="#">Service</a></li>
+            {% if user.is_authenticated %}
+            <div>
+              <ul class="flex flex-col item-center md:flex-row">
+                <li class="">
+                  <button id="login" class=" bg-transparent item-center justify-center px-2 py-2 bg-[#00cba9] rounded-md">
+                    <a class=" text-red-400" href="{% url 'logout' %}">Logout</a>
+                  </button>
+                </li>
+                <li class="">
+                  <button class="btn btn-primary px-2 py-2 bg-white rounded-md text-white">{{user.username}}</button>
+                </li>
+              </ul>
+            </div>
+            {% else %}
+            <div class="my-5">
+              <ul class="flex flex-col item-center md:flex-row">
+                <li class="nav-item">
+                  <button id="login" class="w-24 py-2 rounded-md bg-white ">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                  </button>
+                </li>
+                <li class="nav-item my-2">
+                  <button class="w-24 py-2 rounded-md bg-white ">Get Started</button>
+                </li>
+              </ul>
+            </div> 
+            {% endif %}
+            
+        </ul>
     </div>
 
 <div class="content">
@@ -67,8 +106,65 @@
   
 {% endblock content %}
 </div>
-  {% include "footer.html" %}
+<div id="modal-container" class="hidden payment-modal items-center justify-center rounded-md flex flex-col ">
+      
+        <div class="w-[50%] bg-white py-4 rounded-md px-4 flex flex-col relative">
+          <div id="message_modal" class="hidden py-2 px-2 rounded-md absolute top-2 right-2 bg-green-400">
+          
+      </div>
+            <div class="flex flex-row items-center relative w-32 h-32 gap-x-2">
+              <img src="{% static 'images/mtn.jpg' %}" alt="" class="w-[85%] h-[85%] rounded-md">
+              <img src="{% static 'images/airtel.png' %}" class="w-[85%] rounded-md" alt="">
+            </div>
+
+            <form id="payment_form">
+              {% csrf_token %}
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="one" required type="radio">
+                <label for="">1 Exam 500 Rwf</label>
+              </div>
+
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="day" required type="radio">
+                <label for="">Day Subscription on 5000 Rwf</label>
+              </div>
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="week" required type="radio">
+                <label for="">Week Subscription on 10000 Rwf</label>
+              </div>
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="month" required type="radio">
+                <label for="">Month Subscription on 20000 Rwf</label>
+              </div>
+              <input type="number" name="Phone_number" required id="" class="bg-slate-100 py-2 rounded-md w-[70%] px-2 my-1 shadow-black shadow-sm" placeholder="Phone Number"> <br>
+              <div class="flex flex-row gap-x-1 items-center ">
+                <button type="submit" id="pay_Button" class="bg-green-500 px-4 py-2 text-white font-bold rounded-md ">
+                Pay Now
+              </button>
+              <button type="button" id="cancel_pay_Button" class="bg-red-500 px-4 py-2 text-white font-bold rounded-md ">
+                Cancel
+              </button>
+              <div id="loader" class="spinner-1 hidden"></div>
+              </div>
+              
+              
+            </form>
+        </div>
     </div>
+  {% include "TailwindFooter.html" %}
+    </div>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="{% static 'Js/script.js' %}"></script>
+  <script>
+    AOS.init();
+      
+        $(document).ready(function() {
+            $('#menu').click(function() {
+                $('#menu_container').toggleClass('hidden');
+            });
+        });
+    
+  </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>

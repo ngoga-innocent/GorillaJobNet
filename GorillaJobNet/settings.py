@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import os
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -15,7 +16,7 @@ SECRET_KEY = 'django-insecure-lt%&9@u1nr)vx158fepx$&13@lr+0+eqe#dyy9&r+3tpgi45o-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -31,6 +32,8 @@ INSTALLED_APPS = [
     'Login',
     'Quiz',
     'Payment',
+    'Staff',
+    'django_truncate'
 ]
 
 MIDDLEWARE = [
@@ -73,6 +76,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+DATABASES['default']=dj_database_url.parse('postgres://admin:ixEfuyDZvwLMdraq99E3gc90rNUwk9zq@dpg-cpicndmct0pc73fq4ghg-a.oregon-postgres.render.com/gorillajobnet')
 
 
 # Password validation

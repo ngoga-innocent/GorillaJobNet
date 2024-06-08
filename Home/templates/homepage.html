@@ -1,16 +1,89 @@
 {% extends 'base.html' %} {% block title %} Gorilla Job Net {% endblock title %}
 {% load static %} {% block content %}
-<div class="container" id="home">
-  <div class="align-items-center justify-content-center">
-    <h2 id="header" class="my-5">Take Online Exam</h2>
-    <h3 id="second-header">NUMBER OF ACTIVE USERS RIGHT NOW</h3>
-    <h4 id="number">200+</h4>
+<div id="home">
+  <div class="container flex flex-col md:flex-row md:justify-between px-10">
+    <div class="items-center flex flex-col">
+      <h3
+        data-aos="fade-right"
+        data-aos-duration="2000"
+        class="my-5 font-bold text-2xl"
+      >
+        Evaluate your SKills Before Exam
+      </h3>
+      <p data-aos-delay="200" data-aos-duration="2000" data-aos="fade-right">
+        Gorilla Job Nets Aims for Your best performance
+      </p>
+    </div>
+    <div>
+      <img
+        data-aos="zoom-in-right"
+        data-aos-duration="3000"
+        data-aos-delay="1000"
+        src="{% static 'images/bitmap.png' %}"
+        alt=""
+      />
+    </div>
+    <div class="hidden md:block">
+      <img
+        data-aos="zoom-out-right"
+        data-aos-duration="4000"
+        class="right-7 w-28 h-28 md:w-56 md:h-56 rounded-full rounded-full"
+        src="{% static 'images/logo.jpg' %}"
+        alt=""
+      />
+    </div>
   </div>
-  <div>
-    <img src="{% static 'images/bitmap.png' %}" alt="" />
+
+  <div class="flex flex-col md:flex-row jsustify-center items-center">
+    <img
+      class="hidden md:block"
+      src="{% static 'images/subscription.svg' %}"
+      alt=""
+    />
+    <div
+      class="flex flex-col bg-white border md:border-none items-center relative rounded-md items-center min-w-[90%] md:min-w-[30%] justify-center px-2 py-2 shadow-xs shadow-black"
+    >
+      <h3 class="font-bold text-md md:text-lg">
+        Access All Exams the :
+      </h3>
+      <ul>
+        <li class="flex flex-row items-center gap-x-2">
+          <p class="text-sm font-bold">Day on :</p>
+          <p class="text-sm">5000rwf</p>
+        </li>
+        <li class="flex flex-row items-center gap-x-2">
+          <p class="text-sm font-bold">Week on :</p>
+          <p class="text-sm">5000rwf</p>
+          <p class="text-xs">Recommended</p>
+        </li>
+        <li class="flex flex-row items-center gap-x-2">
+          <p class="text-sm font-bold">Month on :</p>
+          <p class="text-sm">5000rwf</p>
+        </li>
+      </ul>
+      <button
+        class="animate-pulse bg-green-800 w-14 h-14 rounded-full absolute -top-4 -right-4"
+      ></button>
+      <button
+        id="Subscription"
+        data-aos="fade-right"
+        data-aos-delay="700"
+        data-aos-duration="700"
+        class="px-2 py-2 bg-[#074526] text-white font-bold rounded-md my-2"
+      >
+        Get Subscription
+      </button>
+    </div>
+    <div class="self-center flex flex-col w-full mx-auto">
+      <button
+        class="bg-[#074526] text-white max-w-[70%] self-center font-bold px-3 py-4 rounded-md my-5 md:my-2"
+        data-aos="fade-down"
+        data-aos-delay="4000"
+        data-aos-duration="6000"
+      >
+        <a href="{% url 'quiz_home' %}" class="nav-link">Explore Our Exams</a>
+      </button>
+    </div>
   </div>
-  <button class="btn btn-primary btn-lg">
-    <a href="{% url 'quiz_home' %}" class="nav-link">Explore Our Exams</a>
-  </button>
 </div>
 {% endblock content %}

@@ -1,0 +1,98 @@
+{% extends 'staff_base.html' %} <br />
+{% block Heading %} Question {% endblock Heading %} <br />
+{% block content %}
+<div>
+  <div id="exam_details">
+    <h2 class="font-bold" id="exam_name"></h2>
+    <p id="exam_description"></p>
+  </div>
+  <div class="flex flex-col">
+    <h2 class="font-bold">Add New Question</h2>
+    <form id="questions" class="relative flex flex-col">
+      {% csrf_token %}
+      <input
+        type="text"
+        name="question"
+        class="bg-white shadow-sm shadow-black py-2 px-2 w-[90%] rounded-md"
+        placeholder="Add Question"
+        required
+      />
+      <div id="answer_input" class="ml-4 flex flex-col gap-2 my-2">
+        <div class="items-center flex flex-row gap-x-2 option-group">
+          <input
+            type="text"
+            name="option"
+            class="bg-white shadow-sm shadow-black py-2 px-2 w-[90%] rounded-md"
+            placeholder="Add Option 1"
+            required
+          />
+          <input
+            type="checkbox"
+            name="correct_option"
+            class="bg-white w-7 h-7 roounded-sm"
+          />
+        </div>
+        <div class="items-center flex flex-row gap-x-2 option-group">
+          <input
+            type="text"
+            name="option"
+            class="bg-white shadow-sm shadow-black py-2 px-2 w-[90%] rounded-md"
+            placeholder="Add Option 2"
+            required
+          />
+          <input
+            type="checkbox"
+            name="correct_option"
+            class="bg-white w-7 h-7 roounded-sm"
+          />
+        </div>
+        <div class="items-center flex flex-row gap-x-2 option-group">
+          <input
+            type="text"
+            name="option"
+            class="bg-white shadow-sm shadow-black py-2 px-2 w-[90%] rounded-md"
+            placeholder="Add Option 3"
+            required
+          />
+          <input
+            type="checkbox"
+            name="correct_option"
+            class="bg-white w-7 h-7 roounded-sm"
+          />
+        </div>
+        <div class="items-center flex flex-row gap-x-2 option-group">
+          <input
+            type="text"
+            name="option"
+            class="bg-white shadow-sm shadow-black py-2 px-2 w-[90%] rounded-md"
+            placeholder="Add Option 4"
+            required
+          />
+          <input
+            type="checkbox"
+            name="correct_option"
+            class="bg-white w-7 h-7 roounded-sm"
+          />
+        </div>
+      </div>
+      <button
+        id="add_option"
+        type="button"
+        class="self-start bg-green-500 text-white rounded-full w-8 h-8 font-bold"
+      >
+        <i class="fa-solid fa-plus"></i>
+      </button>
+      <button
+        type="submit"
+        class="self-end mx-[10%] bg-green-500 text-white rounded-md px-5 py-2 font-bold"
+      >
+        Save
+      </button>
+    </form>
+  </div>
+  <div id="quiz_questions">
+    <h2 class="font-bold">Quiz Questions</h2>
+    <div id="quiz_question_container" class="flex flex-col gap-1"></div>
+  </div>
+  {% endblock content %}
+</div>

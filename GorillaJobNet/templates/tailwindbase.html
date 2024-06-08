@@ -40,8 +40,12 @@
         
     {% endblock hero %}
         
-    <div id="modal-container" class="hidden payment-modal items-center justify-center rounded-md flex flex-col">
-        <div class="w-[50%] bg-white py-4 rounded-md px-4 flex flex-col ">
+    <div id="modal-container" class="hidden payment-modal items-center justify-center rounded-md flex flex-col ">
+      
+        <div class="w-[50%] bg-white py-4 rounded-md px-4 flex flex-col relative">
+          <div id="message_modal" class="hidden py-2 px-2 rounded-md absolute top-2 right-2 bg-green-400">
+          
+      </div>
             <div class="flex flex-row items-center relative w-32 h-32 gap-x-2">
               <img src="{% static 'images/mtn.jpg' %}" alt="" class="w-[85%] h-[85%] rounded-md">
               <img src="{% static 'images/airtel.png' %}" class="w-[85%] rounded-md" alt="">
@@ -51,20 +55,20 @@
               {% csrf_token %}
               <div class="flex flex-row gap-x-2">
                 <input name="subsciption_type" value="one" required type="radio">
-                <label for="">1 Exam</label>
+                <label for="">1 Exam 500 Rwf</label>
               </div>
 
               <div class="flex flex-row gap-x-2">
                 <input name="subsciption_type" value="day" required type="radio">
-                <label for="">Day Subscription on 5000</label>
+                <label for="">Day Subscription on 5000 Rwf</label>
               </div>
               <div class="flex flex-row gap-x-2">
                 <input name="subsciption_type" value="week" required type="radio">
-                <label for="">Week Subscription on 10000</label>
+                <label for="">Week Subscription on 10000 Rwf</label>
               </div>
               <div class="flex flex-row gap-x-2">
                 <input name="subsciption_type" value="month" required type="radio">
-                <label for="">Month Subscription on 20000</label>
+                <label for="">Month Subscription on 20000 Rwf</label>
               </div>
               <input type="number" name="Phone_number" required id="" class="bg-slate-100 py-2 rounded-md w-[70%] px-2 my-1 shadow-black shadow-sm" placeholder="Phone Number"> <br>
               <div class="flex flex-row gap-x-1 items-center ">
@@ -73,7 +77,7 @@
               </button>
               <div id="loader" class="spinner-1 hidden"></div>
               </div>
-
+              
               
             </form>
         </div>

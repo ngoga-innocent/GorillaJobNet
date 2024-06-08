@@ -1,18 +1,17 @@
-{% extends 'tailwindbase.html' %} {% load static %} {% block content %}
+{% extends 'tailwindbase.html' %} {% load static %} {% block content %} <br />
+{% if quizes %}
 <div class="grid md:grid-cols-6 gap-3 md:gap-6 my-4 items-center px-8">
   {% for quiz in quizes %}
   <div id="faculity" class="rounded-md py-4 px-3 relative">
     <div class="my-3 flex flex-col md:flex-row justify-between">
-      <a href="{% url 'quiz_questions' quiz.id %}" class="my-3"
-        >{{ quiz.name }}</a
-      >
+      <a href="{% url 'quiz_questions' quiz.id %}" class="">{{ quiz.name }}</a>
       <p class="text-xs text-white right-2 bottom-2 my-2 max-w-[20%] px-1">
         Qns {{quiz.number_of_questions }}
       </p>
     </div>
 
     <button
-      class="start-button px-3 py-2 rounded-md bg-blue-300 text-white font-bold"
+      class="start-button px-3 py-2 rounded-md bg-[#10644D] text-white font-bold"
       data-quiz-id="{{ quiz.id }}"
       data-quiz-name="{{ quiz.name }}"
       data-quiz-questions="{{ quiz.number_of_questions }}"
@@ -22,6 +21,10 @@
   </div>
   {% endfor %}
 </div>
+{% else %}
+<div>No Exam Available for this Department</div>
+{% endif %}
+
 <div
   id="modal-container"
   class="modal-container w-full flex flex-col min-h-screen z-30 transition-all ease-in-out duration-5000 duration-5000 hidden"
@@ -35,6 +38,77 @@
 
     <div id="modal-content" class="my-2"></div>
     <div id="modal-footer" class="flex flex-row gap-3 self-end mt-4 mb-1"></div>
+    <div id="modal-message"></div>
+    <div
+      class="modal-spinner hidden w-7 h-7 items-center justify-center self-center rounded-full border-2 border-dashed border-black animate-spin"
+    ></div>
+  </div>
+</div>
+<div
+  id="modal-container"
+  class="hidden quiz-payment-modal items-center justify-center rounded-md flex flex-col"
+>
+  <div class="w-[50%] bg-white py-4 rounded-md px-4 flex flex-col relative">
+    <div
+      id="message_modal1"
+      class="hidden py-2 px-2 rounded-md absolute top-2 right-2 bg-green-400"
+    ></div>
+    <div class="flex flex-row items-center relative w-32 h-32 gap-x-2">
+      <img
+        src="{% static 'images/mtn.jpg' %}"
+        alt=""
+        class="w-[85%] h-[85%] rounded-md"
+      />
+      <img
+        src="{% static 'images/airtel.png' %}"
+        class="w-[85%] rounded-md"
+        alt=""
+      />
+    </div>
+
+    <form id="quiz_payment_form">
+      {% csrf_token %}
+      <!-- <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="one" required type="radio">
+                <label for="">1 Exam 500 Rwf</label>
+              </div>
+
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="day" required type="radio">
+                <label for="">Day Subscription on 5000 Rwf</label>
+              </div>
+              <div class="flex flex-row gap-x-2">
+                <input name="subsciption_type" value="week" required type="radio">
+                <label for="">Week Subscription on 10000 Rwf</label>
+              </div> -->
+      <div class="flex flex-row gap-x-2">
+        <input name="subsciption_type" value="one" required type="hidden" />
+        <label for="">Exam Payment 500 Rwf</label>
+      </div>
+      <input
+        type="number"
+        name="Phone_number"
+        required
+        id=""
+        class="bg-slate-100 py-2 rounded-md w-[70%] px-2 my-1 shadow-black shadow-sm"
+        placeholder="Phone Number"
+      />
+      <br />
+      <input type="hidden" name="exam_id" id="exam_id" />
+      <div class="flex flex-row gap-x-1 items-center">
+        <button
+          type="submit"
+          id="quiz_pay_Button"
+          class="bg-green-500 px-4 py-2 text-white font-bold rounded-md"
+        >
+          Pay Now
+        </button>
+        <div
+          id="loader1"
+          class="animate-spin border-2 border-blue-400 h-4 w-4 rounded-full border-dashed hidden"
+        ></div>
+      </div>
+    </form>
   </div>
 </div>
 

@@ -2,15 +2,21 @@ from django.shortcuts import render,HttpResponse
 from django.http import JsonResponse
 import requests
 import json
-from.models import Payment,Subscription
+from django.shortcuts import get_object_or_404
+from .models import Payment,Subscription,OTP
 from Quiz.models import Quiz
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+import random,string
 # Create your views here.
-
+def generate_otp():
+    while True:
+        otp = ''.join(random.choices(string.digits, k=6))
+        if not OTP.objects.filter(code=otp).exists():
+            return otp
 base_url='https://payments.paypack.rw/api'
 def Authenticate():
   
@@ -18,8 +24,8 @@ def Authenticate():
     url = f"{base_url}/auth/agents/authorize"
 
     payload = json.dumps({
-    "client_id": "c9c2d000-22b7-11ef-bfa1-deade826d28d",
-    "client_secret": "7c1afe90ce4704c0578f4470e3490e1eda39a3ee5e6b4b0d3255bfef95601890afd80709"
+    "client_id": "65d44ab6-24cd-11ef-82a6-deade826d28d",
+    "client_secret": "3d165349ce84512f0adb79f4dc42fbd9da39a3ee5e6b4b0d3255bfef95601890afd80709"
     })
     headers = {
     'Content-Type': 'application/json',
@@ -31,24 +37,41 @@ def Authenticate():
 class PaymentView(View):
 
     @method_decorator(csrf_exempt)
-    @method_decorator(login_required(login_url='/account/'))
+    # @method_decorator(login_required(login_url='/account/'))
     def post(self, request):
-        user = request.user
-        exam_id = request.POST.get('exam')
+        # print(request.POST)
+        exam_id = request.POST.get('exam_id')
         amount = self.get_amount(request.POST.get('subsciption_type'))
         Subscription_type=request.POST.get('subsciption_type')
-        phone = request.POST.get('phone_number')
+        phone = request.POST.get('Phone_number')
         # print(self.authenticate())
         payment_auth=self.authenticate()
         
         if payment_auth.status_code == 200:
             make_payment=self.make_payment_request(amount,phone,payment_auth.json().get('access'))
-            print(make_payment.json())
+            # print(make_payment.json())
             if make_payment.status_code == 200:
-                save_payment=Payment.objects.create(user=request.user, ref=make_payment.json().get('ref'))
+                print(f'{make_payment.json()} message')
+                if exam_id:
+                    exam=get_object_or_404(Quiz,pk=exam_id)
+                    otp=generate_otp()
+                    
+                   
+                    otp_save=OTP.objects.create(otp=otp,valid=True)
+                    if request.user.is_authenticated:
+
+                        save_payment=Payment.objects.create(user=request.user, paid_exam=exam,ref=make_payment.json().get('ref'))
+                    else:
+                        save_payment=Payment.objects.create( paid_exam=exam,ref=make_payment.json().get('ref'))    
+                else:    
+                    if request.user.is_authenticated:
+                        save_payment=Payment.objects.create(user=request.user, ref=make_payment.json().get('ref'),type=Subscription_type)
+                    else:    
+                        save_payment=Payment.objects.create(ref=make_payment.json().get('ref'),type=Subscription_type)    
                 if save_payment:
-                    return JsonResponse({"status": "success","ref":make_payment.json().get('ref')}, status=200)
-                return JsonResponse({"status": "error", "message":"Failed to create payment"},status=200)
+                    return JsonResponse({"status": "success","ref":make_payment.json().get('ref'),"phone":phone,"otp":otp}, status=200)
+                return JsonResponse({"status": "error", "message":"Failed to save payment"},status=200)
+            print(make_payment.json())
             return JsonResponse({"status": "error","user_message":"Please check your balance and your internet"}, status=200)
             
         
@@ -74,8 +97,8 @@ class PaymentView(View):
     def authenticate(self):
         url = f"{base_url}/auth/agents/authorize"
         payload = {
-            "client_id": "c9c2d000-22b7-11ef-bfa1-deade826d28d",
-            "client_secret": "7c1afe90ce4704c0578f4470e3490e1eda39a3ee5e6b4b0d3255bfef95601890afd80709"
+            "client_id": "65d44ab6-24cd-11ef-82a6-deade826d28d",
+            "client_secret": "3d165349ce84512f0adb79f4dc42fbd9da39a3ee5e6b4b0d3255bfef95601890afd80709"
         }
         headers = {
             'Content-Type': 'application/json',
@@ -85,16 +108,17 @@ class PaymentView(View):
         return response
 
     def make_payment_request(self, amount, phone, access_token):
-        print(access_token)
+        
         url = f"{base_url}/transactions/cashin"
         payload =json.dumps({
             "amount": 100,
-            "number": '0782214360'
+            "number":phone
         })
         headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': f'Bearer {access_token}'
+            'Authorization': f'Bearer {access_token}',
+            "X-Webhook-Mode":"development"
         }
         # url="https://payments.paypack.rw/api/transactions/cashin"
         response = requests.request("POST", url, headers=headers, data=payload)
@@ -108,15 +132,33 @@ class PaymentView(View):
             "response": payment_auth.content
         }
         return JsonResponse(error_data, status=payment_auth.status_code)   
-def CheckPaymentStatus(referenceKey,access_token,client):
-    #payment_auth = Authenticate()
-    referenceKey = referenceKey
-    access_token = access_token
-    client=client
-    url =url = f"https://payments.paypack.rw/api/events/transactions?ref={referenceKey}&kind=CASHIN&client={client}"
-    payload={}
-    headers = {'Authorization': f'Bearer {access_token}'}
+def CheckPaymentStatus(request):
+    if request.method == "GET":
+        payment_auth = Authenticate()
+        referenceKey = request.GET.get('ref')
+        #referenceKey='af575514-be29-41d2-9d31-40d784ce512e'
+        access_token = payment_auth.json().get('access')
+        client=request.GET.get('phone')
+        #client="0782214360"
+        url =url = f"{base_url}/events/transactions?ref={referenceKey}&kind=CASHIN&client={client}"
+        payload={}
+        headers = {'Authorization': f'Bearer {access_token}'}
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    return JsonResponse({"success": response.json()})
-     
+        response = requests.request("GET", url, headers=headers, data=payload)
+        print(response.json())
+        data=response.json()
+        if int(data.get('total',0) )>1:
+            status=data.get('transactions')[0].get('data').get('status')
+            if status =='failed':
+                return JsonResponse({"status": "failed"}, status=200)
+            else:
+                payment=Payment.objects.get(ref=referenceKey,user=request.user)
+                payment.valid=True
+                payment.save()
+                return JsonResponse({"status": "success"}, status=200)
+        return JsonResponse({"success": response.json()})
+def Webhook(request):
+    if request.method == "POST":
+        print(request.POST)
+        return JsonResponse({"success": "success"}, status=200)
+    return JsonResponse({"success": "failed"}, status=200)

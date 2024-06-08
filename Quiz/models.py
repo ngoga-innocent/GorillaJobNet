@@ -4,6 +4,7 @@ import random
 from django.utils import timezone
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
+from Payment.models import OTP
 # Create your models here.
 class Faculties(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
@@ -34,7 +35,7 @@ class Quiz(models.Model):
     def get_quiz_questions(self):
         question=list(self.question_set.all())
         random.shuffle(question)
-        return question[:self.number_of_questions]
+        return sorted(question, key=lambda q: q.id)
     def get_user_submissions(self):
         return self.usersubmission_set.all()
     
@@ -60,7 +61,8 @@ class Answer(models.Model):
         return f"{self.text} + {self.correct} + {self.question}" 
 class UserSubmission(models.Model):
     id=models.UUIDField(primary_key=True, default=uuid.uuid4,editable=False)
-    user=models.ForeignKey(User, on_delete=models.CASCADE)
+    user=models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    code=models.ForeignKey(OTP, on_delete=models.CASCADE,default='b8287861-aea3-48a3-89b0-8fbd9a8a27cf')
     question=models.ForeignKey(Question, on_delete=models.CASCADE)
     quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE)
     user_response=models.ForeignKey(Answer, on_delete=models.CASCADE,null=True) 
@@ -78,9 +80,11 @@ class UserSubmission(models.Model):
 def update_Number_of_Questions(sender,instance,created,**kwargs):
     if created:
         try:
-            quiz=Quiz.objects.get(id=instance.quiz)
+            quiz=Quiz.objects.get(id=instance.quiz.id)
             quiz.number_of_questions = quiz.number_of_questions + 1
             quiz.save()
         except Quiz.DoesNotExist:
             return False
-post_save.connect(update_Number_of_Questions,Quiz)        
+    
+       
+post_save.connect(update_Number_of_Questions,Question)        

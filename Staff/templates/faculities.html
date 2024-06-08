@@ -1,0 +1,112 @@
+{% extends 'staff_base.html' %} {% block Heading %} Faculity <br />
+{% endblock Heading %}
+<br />
+{% block content %}
+<div class="flex flex-col w-[100%]">
+  <button
+    id="add_faculity_button"
+    class="self-end py-2 px-3 bg-blue-500 text-white rounded-md"
+  >
+    Add Faculity
+  </button>
+  <div>
+    <h4 class="text-md font-bold">All Availble Faculities</h4>
+    <div class="flex flex-row flex-wrap gap-2">
+      {% for faculity in faculities %}
+
+      <button
+        data-quiz-id="{{ exam.id }}"
+        id="quiz_button_edit"
+        class="flex flex-col bg-white px-2 py-2 rounded-md w-[18%]"
+      >
+        <h4 class="text-md">{{faculity.name}}</h4>
+        <!-- <p class="text-sm">{{exam.description}}</p> -->
+      </button>
+      <div class="flex flex-col"></div>
+
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!--   Add Exam Modal    -->
+<div id="modal-container" class="hidden faculity_modal flex flex-col">
+  <button
+    id="close_modal"
+    class="self-end bg-red-500 px-2 py-1 mx-6 rounded-lg"
+  >
+    <i class="fa-solid fa-xmark" style="color: white; font-size: x-large;"></i>
+  </button>
+  <div
+    id="modal"
+    class="flex flex-col items-center w-[80%] relative bg-white shadow-md shadow-black py-12 rounded-md mx-auto"
+  >
+    <h2 class="text-lg font-bold my-1">Add a New Faculity</h2>
+    <form a id="faculity_form" class="self-center px-3">
+      {% csrf_token %}
+      <input
+        name="name"
+        type="text"
+        placeholder="Exam Name"
+        required
+        class="bg-white w-[80%] border-2 my-1 shadow-sm shadow-black rounded-md px-2 py-2 mx-auto border-grey-200"
+      />
+
+      <!-- <select
+        id="mySelectBox"
+        required
+        class="bg-white w-[80%] border-2 my-1 shadow-sm shadow-black rounded-md px-2 py-2 mx-auto border-grey-200"
+        name="faculity"
+      >
+        <option value="">Select Faculity...</option>
+      </select> -->
+
+      <!-- <input
+        name="description"
+        required
+        type="text"
+        multiple
+        placeholder="Exam Description"
+        class="bg-white w-[80%] border-2 h-20 my-1 shadow-sm shadow-black rounded-md px-2 py-2 mx-auto border-grey-200"
+      /> -->
+      <!-- <input
+        required
+        name="duration"
+        type="number"
+        placeholder="Exam Duration(in minutes)"
+        class="bg-white w-[80%] border-2 my-1 shadow-sm shadow-black rounded-md px-2 py-2 mx-auto border-grey-200"
+      /> -->
+      <!-- <input
+        name="number_of_questions"
+        required
+        type="number"
+        placeholder="Number of Questions"
+        class="bg-white w-[80%] border-2 my-1 shadow-sm shadow-black rounded-md px-2 py-2 mx-auto border-grey-200"
+      /> -->
+      <!-- <input
+        type="number"
+        name="passing_marks"
+        placeholder="Passing Marks in %"
+        class="bg-white w-[80%] border-2 my-1 shadow-sm shadow-black rounded-md px-2 py-2 mx-auto border-grey-200"
+      /> -->
+      <br />
+      <div class="flex flex-row gap-x-3">
+        <button
+          class="py-2 px-4 bg-green-300 rounded-md text-white font-bold"
+          type="submit"
+        >
+          Add Exam
+        </button>
+        <div
+          id="loader2"
+          class="animate-spin border-2 border-blue-400 h-4 w-4 rounded-full border-dashed hidden"
+        ></div>
+      </div>
+    </form>
+    <div
+      id="message_modal2"
+      class="hidden py-2 px-2 rounded-md absolute top-2 right-2"
+    ></div>
+  </div>
+</div>
+{% endblock content %}

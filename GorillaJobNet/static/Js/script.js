@@ -54,17 +54,21 @@ $(document).ready(function (e) {
     const quizId = this.getAttribute("data-quiz-id");
     const quizName = this.getAttribute("data-quiz-name");
     const quizQuestions = this.getAttribute("data-quiz-questions");
-
+    localStorage.setItem("exam_id", quizId);
+    const otp = localStorage.getItem("otp");
     $.ajax({
       url: "/exam/Checkpayment",
       method: "GET",
-      data: { exam_id: quizId },
+      data: { exam_id: quizId, otp: otp },
       success: function (data) {
         let content;
         let header;
         let footer;
         if (!data.paid) {
-          header = `Please Pay First to continue...`;
+          header = `<form class='code_check flex flex-row items-center gap-x-2'>
+          <input type="number" required name="code" class='bg-slate-200 rounded-md w-[100%] rounded-md py-2 px-2' placeholder='Enter Your Code' />
+          <button type='submit' class='check_code bg-[#10644D] px-3 py-2 rounded-md'><p class='text-white font-bold'>Continue</p></button>
+          </form>`;
           content = `<div>
      <div class='flex flex-row gap-x-3'>
     <h5 class="text-sm text-gray-500">1 Exam :</h5>
@@ -94,10 +98,10 @@ $(document).ready(function (e) {
       >
         Cancel
       </button>
-      <button id="confirm"
-        class="Pay px-4 py-2 rounded-md text-white font-bold bg-green-400"
+      <button id="confirm" data-quiz-id="${quizId}"
+        class="Pay px-4 py-2 rounded-md text-white font-bold bg-[#10644D]"
       >
-        Pay
+        Pay To Get Code
       </button>`;
         } else {
           content = `<div>
@@ -119,8 +123,8 @@ $(document).ready(function (e) {
       >
         Cancel
       </button>
-      <button
-        class="confirm px-4 py-2 rounded-md text-white font-bold bg-green-400"
+      <button 
+        class="confirm px-4 py-2 rounded-md text-white font-bold bg-[#10644D]"
       >
         Start
       </button>`;
@@ -142,15 +146,76 @@ $(document).ready(function (e) {
     $("#modal-header").empty();
     $("#modal-footer").empty();
   });
+  $(document).on("submit", ".code_check", function (e) {
+    e.preventDefault();
+    $(".modal-spinner").removeClass("hidden");
+    const code = $(this).serialize();
+    const otp = $('input[name="code"]').val();
 
+    $.ajax({
+      url: "/exam/check_otp",
+      method: "GET",
+      data: code,
+      success: function (data) {
+        $(".modal-spinner").addClass("hidden");
+        if (data.valid == true) {
+          const quizId = localStorage.getItem("exam_id");
+          localStorage.setItem("otp", otp);
+          localStorage.setItem("exam_id", quizId);
+          $("#modal-message").append(
+            `<p class='text-[#10644D] font-bold text-xs'>Code Validated, you will be redirect to exam page in a seconds.....</p>`
+          );
+          setTimeout(() => {
+            window.location.href = "/exam/quiz/" + quizId;
+          }, 3000);
+        } else {
+          $("#modal-message").append(
+            `<p class='text-orange-300 font-bold text-xs'>Code Provided Either Doesn't exist or Expired.....</p>`
+          );
+        }
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  });
   $(document).on("click", ".confirm", function () {
     const quizId = $(".start-button").data("quiz-id");
     window.location.href = "/exam/quiz/" + quizId;
     $(".modal-container").addClass("hidden");
   });
+  ///////////////////////////For The Subscription Modal
+  // $(document).on("click", ".Pay", function () {
+  //   $(".modal-container").addClass("hidden");
+  //   const exam_id = this.getAttribute("data-quiz-id");
+  //   // alert(exam_id);
+  //   $(".payment-modal").removeClass("hidden");
+  // });
   $(document).on("click", ".Pay", function () {
     $(".modal-container").addClass("hidden");
-    $(".payment-modal").removeClass("hidden");
+    const exam_id = this.getAttribute("data-quiz-id");
+    // alert(exam_id);
+    $(".quiz-payment-modal").removeClass("hidden");
+
+    $(document).on("submit", "#quiz_payment_form", function (e) {
+      e.preventDefault(); // Prevent the default form submission
+      $("#exam_id").val(exam_id);
+      const formData = $(this).serialize();
+      // alert("form submitted");
+      $("#loader1").removeClass("hidden");
+      $.ajax({
+        url: "/payment/",
+        method: "POST",
+        data: formData,
+        success: function (data) {
+          CheckPaymentStatusSingle(data.ref, data.phone, exam_id);
+          console.log(data);
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    });
   });
 
   $(document).on("submit", "#payment_form", function (e) {
@@ -163,6 +228,7 @@ $(document).ready(function (e) {
       method: "POST",
       data: formData,
       success: function (data) {
+        CheckPaymentStatus(data.ref, data.phone);
         console.log(data);
       },
       error: function (error) {
@@ -170,33 +236,140 @@ $(document).ready(function (e) {
       },
     });
   });
+  function CheckPaymentStatusSingle(ref, phone, exam_id) {
+    const interval = setInterval(() => {
+      $.ajax({
+        url: "/payment/payment_status",
+        method: "GET",
+        data: { ref: ref, phone: phone },
+        success: function (data) {
+          if (data.status == "success") {
+            clearInterval(interval);
+            $("#loader").addClass("hidden");
+            $("#message_modal1").removeClass("hidden");
+            $("#message_modal1").addClass("bg-red-400");
+            $("#message_modal1").html(
+              `<p class="text-white">Payment Success </p>`
+            );
+            setTimeout(() => {
+              window.location.href = "/exam/quiz/" + exam_id;
+            }, 5000);
+          } else if (data.status === "failed") {
+            clearInterval(interval);
+            $("#loader").addClass("hidden");
+            $("#message_modal1").removeClass("hidden");
+            $("#message_modal1").addClass("bg-red-400");
+            $("#message_modal1").html(
+              `<p class="text-white">Payment Failed  </p>`
+            );
+            setTimeout(() => {
+              window.location.href = "/exam/";
+            }, 5000);
+          }
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    }, 2000);
+  }
+  function CheckPaymentStatus(ref, phone) {
+    const interval = setInterval(() => {
+      $.ajax({
+        url: "/payment/payment_status",
+        method: "GET",
+        data: { ref: ref, phone: phone },
+        success: function (data) {
+          if (data.status == "success") {
+            clearInterval(interval);
+            $("#loader").addClass("hidden");
+            $("#message_modal").removeClass("hidden");
+            $("#message_modal").addClass("bg-red-400");
+            $("#message_modal").html(
+              `<p class="text-white">Payment Success </p>`
+            );
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 5000);
+          } else if (data.status === "failed") {
+            clearInterval(interval);
+            $("#loader").addClass("hidden");
+            $("#message_modal").removeClass("hidden");
+            $("#message_modal").addClass("bg-red-400");
+            $("#message_modal").html(
+              `<p class="text-white">Payment Failed  </p>`
+            );
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 5000);
+          }
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    }, 2000);
+  }
 });
-
 $(document).ready(function () {
-  $("#submit_question").on("click", function (e) {
-    e.preventDefault();
-    const questionId = this.getAttribute("data-questionId");
-    const selectedAnswer = $(`input[name=${questionId}]:checked`).val();
+  $(".question_answer").on("change", function () {
+    var questionId = $(this).attr("name");
+    var answerId = $(this).val();
+
+    const otp = localStorage.getItem("otp");
+    $(".spinnerContainer").removeClass("hidden");
     $.ajax({
       url: "/exam/submit",
       type: "POST",
       data: {
-        answer_id: selectedAnswer,
+        answer_id: answerId,
         question_id: questionId,
+        code: otp,
         csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
       },
       success: function (data) {
         if (data.status == "success") {
-          $("#next_previous").removeClass("hidden");
-          $("#submit_question").addClass("hidden");
+          $(".spinnerContainer").addClass("hidden");
+          // $("#next_previous").removeClass("hidden");
+          // $("#submit_question").addClass("hidden");
+          console.log(data);
         }
       },
       error: function (e) {
         console.log(e);
+        $(".spinnerContainer").addClass("hidden");
       },
     });
   });
 });
+// function SubmitAnswer(question_id, answer_id) {
+//   $("#submit_question").on("click", function (e) {
+//     e.preventDefault();
+//     const questionId = this.getAttribute("data-questionId");
+//     //const selectedAnswer = $(`input[name=${questionId}]:checked`).val();
+//     const otp = localStorage.getItem("otp");
+//     // console.log(otp);
+//     $.ajax({
+//       url: "/exam/submit",
+//       type: "POST",
+//       data: {
+//         answer_id: question_id,
+//         question_id: answer_id,
+//         code: otp,
+//         csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+//       },
+//       success: function (data) {
+//         if (data.status == "success") {
+//           $("#next_previous").removeClass("hidden");
+//           $("#submit_question").addClass("hidden");
+//         }
+//       },
+//       error: function (e) {
+//         console.log(e);
+//       },
+//     });
+//   });
+// }
 
 $(document).ready(function () {
   $("#Get_results").on("click", function (e) {
@@ -204,32 +377,31 @@ $(document).ready(function () {
     url = window.location.href;
 
     e.preventDefault();
-    const quizId = this.getAttribute("data-quizId");
+    // const quizId = this.getAttribute("data-quizId");
+    const quizId = localStorage.getItem("exam_id");
     // const selectedAnswer = $(`input[name=${questionId}]:checked`).val();
     $.ajax({
       url: "/exam/get_results/" + quizId,
       type: "GET",
-      // data: {
-      //   answer_id: selectedAnswer,
-      //   question_id: questionId,
-      //   csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
-      // },
+      data: {
+        otp: localStorage.getItem("otp"),
+      },
       success: function (data) {
         console.log(data);
         $(".spinnerContainer").addClass("hidden");
         $("#quiz_container").addClass("hidden");
         $("#results").removeClass("hidden");
         $("#results").empty();
-        if (data.data.marks >= 50) {
+        if (data.marks >= 50) {
           $("#results").append(
             `<div>
             <h2>Congratulations,</h2>
-            <div id="marks_div_success" class="rounded-full w-32 h-32 bg-green-400 items-center flex flex-col justify-center text-white font-bold"> ${data.data.marks}%
+            <div id="marks_div_success" class="rounded-full w-32 h-32 bg-green-400 items-center flex flex-col justify-center text-white font-bold"> ${data.marks}%
             
             </div>
             <div>
             <button class='px-3 py-2 rounded-md bg-orange-300'>
-            <a href="/exam/get_all_answer/${data.data.quiz_id}">View All Answer</a>
+            <a href="/exam/get_all_answer/${data.quiz_id}">View All Answer</a>
             </button>
             </div>
             </div>`
@@ -238,12 +410,12 @@ $(document).ready(function () {
           $("#results").append(
             `<div>
             <h2>Oops!! Failed,</h2>
-            <div id="marks_div_success" class="rounded-full w-32 h-32 bg-orange-400 items-center flex flex-col justify-center text-white font-bold"> ${data.data.marks}%
+            <div id="marks_div_success" class="rounded-full w-32 h-32 bg-orange-400 items-center flex flex-col justify-center text-white font-bold"> ${data.marks}%
             
             </div>
             <div>
             <button class='px-3 py-2 rounded-md bg-orange-300'>
-            <a href="/exam/get_all_answer/${data.data.quiz_id} >View All Answer</a>
+            <a href="/exam/get_all_answer/${data.quiz_id}" >View All Answer</a>
             </button>
             </div>
             </div>`
@@ -254,5 +426,15 @@ $(document).ready(function () {
         console.log("error");
       },
     });
+  });
+});
+//////////////////payments////////////////
+$(document).ready(function () {
+  console.log("payments");
+  $("#Subscription").on("click", function () {
+    $(".payment-modal").removeClass("hidden");
+  });
+  $("#cancel_pay_Button").on("click", function () {
+    $(".payment-modal").addClass("hidden");
   });
 });

@@ -57,48 +57,128 @@
     />
   </head>
 
-  <body class="flex flex-col items-center" id="">
-    <div class="flex flex-row items-center gap-x-2">
-      <h2 class="font-bold text-xl">
-        {{quiz_name}}
-      </h2>
-      <p>Answers</p>
-    </div>
-    <div>
-      {% if quiz_questions %}
+  <body class="flex flex-col max-h-screen overflow-y-scroll" id="answers">
+     <div class=" h-[100%] relative">
+      <div class="flex flex-row justify-between items-center px-5 py-2 md:my-2">
       <div>
-        {% for question in quiz_questions %}
-        <div class="my-4">
-          <h4 class="font-bold">{{ forloop.counter }}.{{ question.text }}</h4>
-          {% for answer in question.get_question_answer %}
-          <div class="mx-7">
-            {% if answer.correct %}
-            <div class="flex flex-row gap-x-3 justify-between items-center">
-              <p>{{forloop.counter}}. {{answer.text}}</p>
-              <div class="flex flex-row items-center mx-2">
-                <div
-                  class="w-6 h-6 rounded-full items-center flex flex-col justify-center bg-green-500"
-                >
-                  <i
-                    class="fa fa-check"
-                    aria-hidden="true"
-                    style="color: white;"
-                  ></i>
-                </div>
-                <p>Correct Answer</p>
-              </div>
+        <img class="rounded-full logo " src="{% static 'images/logo.jpg' %}" alt="">
+      </div>
+      <button id="menu" class="md:hidden">
+        <i class="fa-solid fa-bars fa-lg" style="font-size: xx-large;" ></i>
+      </button>
+      
+        <ul class="hidden md:flex flex-col md:flex-row items-center gap-x-2">
+          <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'homepage' %}">Home</a></li>
+           <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="#">About</a></li>
+            <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="#">Service</a></li>
+            {% if user.is_authenticated %}
+            <div>
+              <ul class="flex flex-col item-center md:flex-row">
+                <li class="">
+                  <button id="login" class=" bg-transparent item-center justify-center px-2 py-2 bg-[#00cba9] rounded-md">
+                    <a class=" text-red-400" href="{% url 'logout' %}">Logout</a>
+                  </button>
+                </li>
+                <li class="">
+                  <button class="btn btn-primary px-2 py-2 bg-[#10644D] rounded-md">{{user.username}}</button>
+                </li>
+              </ul>
             </div>
             {% else %}
-            <div class="py-2">{{forloop.counter}}.{{answer.text}}</div>
+            <div>
+              <ul class="flex flex-col item-center md:flex-row">
+                <li class="nav-item">
+                  <button id="login" class=" bg-transparent  justify-center px-2 py-2 bg-[#10644D] rounded-md">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button id="login" class=" justify-center px-2 py-2 bg-[#10644D] rounded-md">
+                    <a class="nav-link text-white" href="{% url 'signup' %}">Get Started</a>
+                  </button>
+                </li>
+              </ul>
+            </div> 
             {% endif %}
+            
+        </ul>
+       <ul id="menu_container" class="hidden bg-[#10644D] min-h-screen  absolute top-0 right-0 w-[50%] px-5 z-50 transition duration-8000 ease-in-out py-8 md:hidden flex-col md:flex-row items-center gap-x-2">
+          <li class="my-1"><a class=" text-white font-bold " href="{% url 'homepage' %}">Home</a></li>
+           <li class="my-1"><a class=" text-white font-bold " href="#">About</a></li>
+            <li class="my-1"><a class=" text-white font-bold " href="#">Service</a></li>
+            {% if user.is_authenticated %}
+            <div>
+              <ul class="flex flex-col item-center md:flex-row">
+                <li class="">
+                  <button id="login" class=" bg-transparent item-center justify-center px-2 py-2 bg-[#00cba9] rounded-md">
+                    <a class=" text-red-400" href="{% url 'logout' %}">Logout</a>
+                  </button>
+                </li>
+                <li class="">
+                  <button class="btn btn-primary px-2 py-2 bg-white rounded-md text-white">{{user.username}}</button>
+                </li>
+              </ul>
+            </div>
+            {% else %}
+            <div class="my-5">
+              <ul class="flex flex-col item-center md:flex-row">
+                <li class="nav-item">
+                  <button id="login" class="w-24 py-2 rounded-md bg-white ">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                  </button>
+                </li>
+                <li class="nav-item my-2">
+                  <button class="w-24 py-2 rounded-md bg-white ">Get Started</button>
+                </li>
+              </ul>
+            </div> 
+            {% endif %}
+            
+        </ul>
+    </div>
+    <div class="flex flex-row w-full max-h-[80%] overflow-y-scroll gap-x-10 ">
+      <div class="flex flex-row gap-x-2 flex-start w-[30%] py-3 px-3">
+        <h2 class="font-bold text-xl">
+          {{quiz_name}}
+        </h2>
+        <p>Answers</p>
+      </div>
+      <div class="flex flex-row gap-x-5 flex-wrap w-[90%]">
+        {% if quiz_questions %}
+        <div>
+          {% for question in quiz_questions %}
+          <div class="my-4">
+            <h4 class="font-bold">{{ forloop.counter }}.{{ question.text }}</h4>
+            {% for answer in question.get_question_answer %}
+            <div class="mx-7">
+              {% if answer.correct %}
+              <div class="flex flex-row gap-x-3 justify-between items-center">
+                <p>{{forloop.counter}} {{answer.text}}</p>
+                <div class="flex flex-row items-center mx-2">
+                  <div
+                    class="w-6 h-6 rounded-full items-center flex flex-col justify-center bg-green-500"
+                  >
+                    <i
+                      class="fa fa-check"
+                      aria-hidden="true"
+                      style="color: white;"
+                    ></i>
+                  </div>
+                  <p>Correct Answer</p>
+                </div>
+              </div>
+              {% else %}
+              <div class="py-2">{{forloop.counter}}.{{answer.text}}</div>
+              {% endif %}
+            </div>
+            {% endfor %}
           </div>
           {% endfor %}
         </div>
-        {% endfor %}
+        {% else %}
+        <p>Sorry, Unknown Error, check your internet and Try again</p>
+        {% endif %}
       </div>
-      {% else %}
-      <p>Sorry, Unknown Error, check your internet and Try again</p>
-      {% endif %}
     </div>
     <script src="{% static 'Js/script.js' %}"></script>
   </body>
