@@ -146,9 +146,15 @@
               <button type="button" id="cancel_pay_Button" class="bg-red-500 px-4 py-2 text-white font-bold rounded-md ">
                 Cancel
               </button>
-              <div id="loader" class="spinner_1 hidden bg-[#10644D] px-2 py-2 items-center gap-x-2 flex flex-row rounded-md">
+              <div class="flex flex-row justify-between mx-9">
+                <div id="loader" class="spinner_1 hidden bg-[#10644D] px-2 py-2 items-center gap-x-2 flex flex-row rounded-md">
                 <div class="w-5 h-5 animate-spin rounded-full  border-2 border-dashed border-white"></div>
                 <p class="text-xs font-bold text-white">Processing...</p>
+              </div>
+              <div class="flex flex-row items-center">
+                <img src="{% static 'images/dont.gif' %}" class="w-8 h-8 rounded-full" alt="">
+                <p class="text-[#10644D]">Don't close window before Getting Your Code</p>
+              </div>
               </div>
               <!-- <div id="loader" class="spinner-1 hidden"></div> -->
               </div>
