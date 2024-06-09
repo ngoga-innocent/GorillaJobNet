@@ -242,6 +242,9 @@ $(document).ready(function () {
 $("#add_faculity_button").on("click", function () {
   $(".faculity_modal").removeClass("hidden");
 });
+$(document).on("click", "#close_modal_faculity", function () {
+  $(".faculity_modal").addClass("hidden");
+});
 $("#faculity_form").on("submit", function (e) {
   e.preventDefault(); // Prevent the default form submission
   const formData = $(this).serialize();

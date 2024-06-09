@@ -32,16 +32,20 @@
 
 <!--   Add Exam Modal    -->
 <div id="modal-container" class="hidden faculity_modal flex flex-col">
-  <button
-    id="close_modal"
-    class="self-end bg-red-500 px-2 py-1 mx-6 rounded-lg"
-  >
-    <i class="fa-solid fa-xmark" style="color: white; font-size: x-large;"></i>
-  </button>
   <div
     id="modal"
     class="flex flex-col items-center w-[95%] relative bg-white shadow-md shadow-black py-12 rounded-md"
   >
+    <button
+      type="button"
+      id="close_modal_faculity"
+      class="self-end bg-red-500 px-2 py-1 mx-6 rounded-lg"
+    >
+      <i
+        class="fa-solid fa-xmark"
+        style="color: white; font-size: x-large;"
+      ></i>
+    </button>
     <h2 class="text-lg font-bold my-1">Add a New Faculity</h2>
     <form id="faculity_form" class="self-center px-3">
       {% csrf_token %}
