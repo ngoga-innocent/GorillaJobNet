@@ -17,8 +17,7 @@
       <button
         type="button"
         data-faculity-id="{{ faculity.id }}"
-        id="faculity_button_delete"
-        class="flex flex-col bg-white hover:bg-red-800 hover:transition-all hover:text-white ease-in-out duration-8000 px-2 py-2 rounded-md w-[18%] faculity-edit"
+        class="faculityDelete flex flex-col bg-white hover:bg-red-800 hover:transition-all hover:text-white ease-in-out duration-8000 px-2 py-2 rounded-md w-[18%] faculity-edit"
       >
         <h4 class="text-md">{{faculity.name}}</h4>
         <!-- <p class="text-sm">{{exam.description}}</p> -->
@@ -39,7 +38,7 @@
     <button
       type="button"
       id="close_modal_faculity"
-      class="self-end bg-red-500 px-2 py-1 mx-6 rounded-lg"
+      class="self-end bg-red-500 px-2 py-1 mx-6 rounded-md"
     >
       <i
         class="fa-solid fa-xmark"
@@ -63,7 +62,7 @@
           class="py-2 px-4 bg-[#10644D] rounded-md text-white font-bold"
           type="submit"
         >
-          Add Exam
+          Add Faculity
         </button>
         <div
           id="loader3"

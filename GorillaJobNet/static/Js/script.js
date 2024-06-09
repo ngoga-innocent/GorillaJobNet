@@ -8,7 +8,7 @@ $(document).ready(function () {
         type: "GET",
         data: { query: query },
         success: function (data) {
-          console.log(data);
+          // console.log(data);
           var facultyList = $("#faculty-list");
           facultyList.empty(); // Clear the existing content
 
@@ -136,7 +136,7 @@ $(document).ready(function (e) {
         $(".modal-container").removeClass("hidden");
       },
       error: function (error) {
-        console.log(error);
+        alert("error");
       },
     });
   });
@@ -175,7 +175,7 @@ $(document).ready(function (e) {
         }
       },
       error: function (error) {
-        console.log(error);
+        alert("error");
       },
     });
   });
@@ -209,10 +209,10 @@ $(document).ready(function (e) {
         data: formData,
         success: function (data) {
           CheckPaymentStatusSingle(data.ref, data.phone, exam_id, data.otp);
-          console.log(data);
+          // console.log(data);
         },
         error: function (error) {
-          console.log(error);
+          alert("error");
         },
       });
     });
@@ -221,6 +221,7 @@ $(document).ready(function (e) {
   $(document).on("submit", "#payment_form", function (e) {
     e.preventDefault(); // Prevent the default form submission
     $("#loader").removeClass("hidden");
+    $("#payment_buttons").addClass("hidden");
     const formData = $(this).serialize();
 
     $.ajax({
@@ -229,10 +230,10 @@ $(document).ready(function (e) {
       data: formData,
       success: function (data) {
         CheckPaymentStatus(data.ref, data.phone, data.otp);
-        console.log(data);
+        // console.log(data);
       },
       error: function (error) {
-        console.log(error);
+        alert("error");
       },
     });
   });
@@ -268,7 +269,7 @@ $(document).ready(function (e) {
           }
         },
         error: function (error) {
-          console.log(error);
+          alert("error");
         },
       });
     }, 2000);
@@ -316,7 +317,7 @@ $(document).ready(function (e) {
           }
         },
         error: function (error) {
-          console.log(error);
+          alert("error");
           clearInterval(interval);
           $("#loader").addClass("hidden");
           $("#message_modal").removeClass("hidden");
@@ -362,11 +363,11 @@ $(document).ready(function () {
           $(".spinnerContainer").addClass("hidden");
           // $("#next_previous").removeClass("hidden");
           // $("#submit_question").addClass("hidden");
-          console.log(data);
+          // console.log(data);
         }
       },
       error: function (e) {
-        console.log(e);
+        alert(e);
         $(".spinnerContainer").addClass("hidden");
       },
     });
@@ -417,7 +418,7 @@ $(document).ready(function () {
         otp: localStorage.getItem("otp"),
       },
       success: function (data) {
-        console.log(data);
+        // console.log(data);
         $(".spinnerContainer").addClass("hidden");
         $("#quiz_container").addClass("hidden");
         $("#results").removeClass("hidden");
@@ -453,14 +454,13 @@ $(document).ready(function () {
         }
       },
       error: function () {
-        console.log("error");
+        alert("error");
       },
     });
   });
 });
 //////////////////payments////////////////
 $(document).ready(function () {
-  console.log("payments");
   $("#Subscription").on("click", function () {
     $(".payment-modal").removeClass("hidden");
   });

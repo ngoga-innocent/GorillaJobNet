@@ -139,15 +139,15 @@
                 <label for="">Month Subscription on 20000 Rwf</label>
               </div>
               <input type="number" name="Phone_number" required id="" class="bg-slate-100 py-2 rounded-md md:w-[70%] w-[90%] px-2 my-1 shadow-black shadow-sm" placeholder="Phone Number"> <br>
-              <div class="flex flex-row gap-x-1 items-center ">
+              <div class="flex flex-row gap-x-1 items-center payment_buttons" id="payment_buttons">
                 <button type="submit" id="pay_Button" class="bg-green-500 px-4 py-2 text-white font-bold rounded-md ">
                 Pay Now
               </button>
               <button type="button" id="cancel_pay_Button" class="bg-red-500 px-4 py-2 text-white font-bold rounded-md ">
                 Cancel
               </button>
-              <div class="flex flex-row justify-between mx-9">
-                <div id="loader" class="spinner_1 hidden bg-[#10644D] px-2 py-2 items-center gap-x-2 flex flex-row rounded-md">
+              <div id="loader" class="spinner_1 hidden flex flex-row justify-between mx-9">
+                <div  class="  bg-[#10644D] px-2 py-2 items-center gap-x-2 flex flex-row rounded-md">
                 <div class="w-5 h-5 animate-spin rounded-full  border-2 border-dashed border-white"></div>
                 <p class="text-xs font-bold text-white">Processing...</p>
               </div>

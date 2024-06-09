@@ -9,7 +9,7 @@ urlpatterns = [
     path('get_quiz_questions',get_quiz_questions,name='get_questions'),
     
     path('faculity',Faculity.as_view(),name='faculity'),
-    path('delete-fuculity',DeleteFaculity,name='delete-exam'),
+    path('delete_fuculity',DeleteFaculity,name='delete-exam'),
 
     
     

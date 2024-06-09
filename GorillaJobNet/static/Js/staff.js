@@ -13,7 +13,7 @@ $(document).ready(function () {
       });
     },
     error: function (xhr, status, error) {
-      console.error("AJAX Error: " + status + error);
+      alert("Unknown Error");
     },
   });
   $("#add_exam_button").on("click", function () {
@@ -21,7 +21,6 @@ $(document).ready(function () {
   });
   $("#mySelectBox").on("change", function () {
     var selectedValue = $(this).val();
-    console.log("Selected value:", selectedValue);
   });
   //hiding modal
   $("#close_modal").on("click", function () {
@@ -38,7 +37,7 @@ $(document).ready(function () {
       method: "POST",
       data: formData,
       success: function (data) {
-        console.log(data);
+        // console.log(data);
         if (data.status == true) {
           localStorage.setItem("exam_id", data.exam_id);
           $("#message_modal2").removeClass("hidden");
@@ -60,7 +59,7 @@ $(document).ready(function () {
         }
       },
       error: function (xhr, status, error) {
-        console.error("AJAX Error: " + status + error);
+        alert("Error");
       },
     });
   });
@@ -78,7 +77,7 @@ $(document).ready(function () {
         data: { exam_id: examId },
         success: function (data) {
           if (data.status == "success") {
-            console.log(data);
+            // console.log(data);
             // Update the page with exam details
             $("#exam_name").text(
               `Add Questions and Answer for ${data.exam.name}`
@@ -87,15 +86,15 @@ $(document).ready(function () {
             // $("#exam_description").text(data.exam.description);
             // You can add more fields as needed
           } else {
-            console.error("Error fetching exam details: " + data.message);
+            alert("Error fetching exam details");
           }
         },
         error: function (xhr, status, error) {
-          console.error("AJAX Error: " + status + error);
+          alert("Unkown Error");
         },
       });
     } else {
-      console.error("No exam ID found in local storage");
+      alert("No exam found");
     }
   }
 });
@@ -171,7 +170,7 @@ $(document).ready(function () {
         $(".submit_question_loaded").addClass("hidden");
       },
       error: function (xhr, status, error) {
-        console.error("AJAX Error: " + status + error);
+        alert("Error");
       },
     });
   });
@@ -207,31 +206,31 @@ function getQuestions() {
       }
     },
     error: function (xhr, status, error) {
-      console.error("AJAX Error: ");
+      alert("Error");
     },
   });
 }
 $(document).on("click", ".delete_question_btn", function (e) {
   e.preventDefault();
   const quizId = $(this).data("quiz-id");
-  console.log("quizId");
+  // console.log("quizId");
   $.ajax({
     url: "/staff/delete_question",
     method: "POST",
     data: { quiz_id: quizId },
     success: function (data) {
-      console.log(data);
+      // console.log(data);
       if (data.status == "success") {
         getQuestions();
       }
     },
     error: function (xhr, status, error) {
-      console.error("AJAX Error: " + status + error);
+      alert("Error ");
     },
   });
 });
 $(document).ready(function () {
-  $("#quiz_button_edit").on("click", function (e) {
+  $(".quiz_button_edit").on("click", function (e) {
     e.preventDefault();
     const exam_id = $(this).data("quiz-id");
     // alert(exam_id);
@@ -254,7 +253,7 @@ $("#faculity_form").on("submit", function (e) {
     method: "POST",
     data: formData,
     success: function (data) {
-      console.log(data);
+      // console.log(data);
       if (data.status == true) {
         $("#message_modal3").removeClass("hidden");
         $("#message_modal3").addClass("bg-green-300");
@@ -276,27 +275,26 @@ $("#faculity_form").on("submit", function (e) {
     },
   });
 });
-
-$("#faculity_button_delete").on("click", function (e) {
+$(document).on("click", ".faculityDelete", function (e) {
   e.preventDefault();
   const faculity_id = $(this).data("faculity-id");
-  console.log(faculity_id);
+  // console.log("Delete Button Clicked, ID:", faculity_id);
   const confirmation = confirm("Are you sure you want to delete this faculty?");
   if (confirmation) {
     $.ajax({
-      url: "/staff/delete-faculity",
+      url: "/staff/delete_fuculity",
       method: "GET",
       data: { faculity_id: faculity_id },
       success: function (data) {
         if (data.status == true) {
-          alert("Faculity Deted Successfully");
+          alert("Faculty Deleted Successfully");
         } else {
-          alert("Failed to delete Faculity");
+          alert("Failed to delete Faculty");
         }
         window.location.reload();
       },
       error: function (xhr, status, error) {
-        alert("Error deleting Faculity");
+        alert("Error deleting Faculty");
         window.location.reload();
       },
     });
