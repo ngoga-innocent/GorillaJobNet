@@ -40,14 +40,15 @@ def FaculityQuizes(request,pk):
 
 # @login_required(login_url='/account/')
 def CheckUserPaidExam(request): 
-    otp=request.GET.get('otp')
-    if request.user.is_authenticated and otp:
-        user=User.objects.get(pk=request.user.id)
-        exam_id=request.GET.get('exam_id')
-        if CheckUserPayment(user.id,otp) or CheckUserSubscription(user.id):
-            return JsonResponse({"paid":True},status=200)
-        else: return JsonResponse({"paid":False},status=200)
-    else:return JsonResponse({"paid":False},status=200)
+    return JsonResponse({"paid":False},status=200)
+    # otp=request.GET.get('otp')
+    # if request.user.is_authenticated and otp:
+    #     user=User.objects.get(pk=request.user.id)
+    #     exam_id=request.GET.get('exam_id')
+    #     if CheckOTP():
+    #         return JsonResponse({"paid":True},status=200)
+    #     else: return JsonResponse({"paid":False},status=200)
+    # else:return JsonResponse({"paid":False},status=200)
 def verifyCode(request):
     code=request.GET.get('code')
     return JsonResponse({"valid":CheckOTP(code)})          
@@ -140,11 +141,17 @@ def GetAnswer(request,id):
             if number_of_question>0:
                 marks=correct_answer * 100 /number_of_question
             response_data = {
-                        "marks": marks,
+                        "marks": round(marks,2),
                         "status":"success",
                         "quiz_id":quiz.id
                         }     
-                
+            if Otp.type == 'one':
+                Otp.valid=False
+                Otp.save() 
+            elif timezone.now()>Otp.end_validated_date:
+                Otp.valid=False
+                Otp.save()
+
             return JsonResponse(response_data,status=200)
             
         except Quiz.DoesNotExist:

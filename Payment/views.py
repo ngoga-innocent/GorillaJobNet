@@ -13,9 +13,11 @@ from django.utils.decorators import method_decorator
 import random,string
 # Create your views here.
 def generate_otp():
+    # otp = ''.join(random.choices(string.digits, k=6))
+    # return otp
     while True:
         otp = ''.join(random.choices(string.digits, k=6))
-        if not OTP.objects.filter(code=otp).exists():
+        if not OTP.objects.filter(otp=otp).exists():
             return otp
 base_url='https://payments.paypack.rw/api'
 def Authenticate():
@@ -45,33 +47,36 @@ class PaymentView(View):
         Subscription_type=request.POST.get('subsciption_type')
         phone = request.POST.get('Phone_number')
         # print(self.authenticate())
-        payment_auth=self.authenticate()
+        payment_auth=Authenticate()
         
         if payment_auth.status_code == 200:
+            otp=generate_otp()
+            
             make_payment=self.make_payment_request(amount,phone,payment_auth.json().get('access'))
-            # print(make_payment.json())
+            print(make_payment.json())
             if make_payment.status_code == 200:
                 print(f'{make_payment.json()} message')
+                otp_save=OTP.objects.create(otp=otp,valid=False)
                 if exam_id:
                     exam=get_object_or_404(Quiz,pk=exam_id)
-                    otp=generate_otp()
                     
                    
-                    otp_save=OTP.objects.create(otp=otp,valid=True)
-                    if request.user.is_authenticated:
+                    # 
+                    # print("otp_save")
+                    if otp_save and request.user.is_authenticated:
 
-                        save_payment=Payment.objects.create(user=request.user, paid_exam=exam,ref=make_payment.json().get('ref'))
+                        save_payment=Payment.objects.create(user=request.user,otp=otp_save, paid_exam=exam,ref=make_payment.json().get('ref'))
                     else:
-                        save_payment=Payment.objects.create( paid_exam=exam,ref=make_payment.json().get('ref'))    
+                        save_payment=Payment.objects.create( otp=otp_save,ref=make_payment.json().get('ref'))    
                 else:    
                     if request.user.is_authenticated:
-                        save_payment=Payment.objects.create(user=request.user, ref=make_payment.json().get('ref'),type=Subscription_type)
+                        save_payment=Payment.objects.create(user=request.user,otp=otp_save, ref=make_payment.json().get('ref'),type=Subscription_type)
                     else:    
-                        save_payment=Payment.objects.create(ref=make_payment.json().get('ref'),type=Subscription_type)    
+                        save_payment=Payment.objects.create(otp=otp_save,ref=make_payment.json().get('ref'),type=Subscription_type)    
                 if save_payment:
-                    return JsonResponse({"status": "success","ref":make_payment.json().get('ref'),"phone":phone,"otp":otp}, status=200)
+                    return JsonResponse({"status": "success","ref":make_payment.json().get('ref'),"phone":phone,"otp":otp_save.otp}, status=200)
                 return JsonResponse({"status": "error", "message":"Failed to save payment"},status=200)
-            print(make_payment.json())
+            # print(make_payment.json())
             return JsonResponse({"status": "error","user_message":"Please check your balance and your internet"}, status=200)
             
         
@@ -136,11 +141,13 @@ def CheckPaymentStatus(request):
     if request.method == "GET":
         payment_auth = Authenticate()
         referenceKey = request.GET.get('ref')
+        otp=request.GET.get('otp')
         #referenceKey='af575514-be29-41d2-9d31-40d784ce512e'
         access_token = payment_auth.json().get('access')
         client=request.GET.get('phone')
+        # print(otp)
         #client="0782214360"
-        url =url = f"{base_url}/events/transactions?ref={referenceKey}&kind=CASHIN&client={client}"
+        url = f"{base_url}/events/transactions?ref={referenceKey}&kind=CASHIN&client={client}"
         payload={}
         headers = {'Authorization': f'Bearer {access_token}'}
 
@@ -152,10 +159,19 @@ def CheckPaymentStatus(request):
             if status =='failed':
                 return JsonResponse({"status": "failed"}, status=200)
             else:
-                payment=Payment.objects.get(ref=referenceKey,user=request.user)
-                payment.valid=True
-                payment.save()
-                return JsonResponse({"status": "success"}, status=200)
+                try:
+                    Otp=OTP.objects.get(otp=otp)
+                    Otp.valid=True
+                    Otp.save()
+                    payment=Payment.objects.get(ref=referenceKey,otp=Otp)
+                
+                    payment.valid=True
+                    payment.save()
+                    return JsonResponse({"status": "success","otp":Otp.otp}, status=200)
+                except OTP.DoesNotExist:
+                        return JsonResponse({"status": "failed"}, status=200)
+                except Payment.DoesNotExist:
+                    return JsonResponse({"status": "failed"}, status=200)
         return JsonResponse({"success": response.json()})
 def Webhook(request):
     if request.method == "POST":

@@ -208,7 +208,7 @@ $(document).ready(function (e) {
         method: "POST",
         data: formData,
         success: function (data) {
-          CheckPaymentStatusSingle(data.ref, data.phone, exam_id);
+          CheckPaymentStatusSingle(data.ref, data.phone, exam_id, data.otp);
           console.log(data);
         },
         error: function (error) {
@@ -220,15 +220,15 @@ $(document).ready(function (e) {
 
   $(document).on("submit", "#payment_form", function (e) {
     e.preventDefault(); // Prevent the default form submission
-
-    const formData = $(this).serialize();
     $("#loader").removeClass("hidden");
+    const formData = $(this).serialize();
+
     $.ajax({
       url: "/payment/",
       method: "POST",
       data: formData,
       success: function (data) {
-        CheckPaymentStatus(data.ref, data.phone);
+        CheckPaymentStatus(data.ref, data.phone, data.otp);
         console.log(data);
       },
       error: function (error) {
@@ -236,12 +236,12 @@ $(document).ready(function (e) {
       },
     });
   });
-  function CheckPaymentStatusSingle(ref, phone, exam_id) {
+  function CheckPaymentStatusSingle(ref, phone, exam_id, otp) {
     const interval = setInterval(() => {
       $.ajax({
         url: "/payment/payment_status",
         method: "GET",
-        data: { ref: ref, phone: phone },
+        data: { ref: ref, phone: phone, otp: otp },
         success: function (data) {
           if (data.status == "success") {
             clearInterval(interval);
@@ -273,24 +273,35 @@ $(document).ready(function (e) {
       });
     }, 2000);
   }
-  function CheckPaymentStatus(ref, phone) {
+  function CheckPaymentStatus(ref, phone, otp) {
     const interval = setInterval(() => {
       $.ajax({
         url: "/payment/payment_status",
         method: "GET",
-        data: { ref: ref, phone: phone },
+        data: { ref: ref, phone: phone, otp: otp },
         success: function (data) {
           if (data.status == "success") {
             clearInterval(interval);
             $("#loader").addClass("hidden");
             $("#message_modal").removeClass("hidden");
-            $("#message_modal").addClass("bg-red-400");
+            // $("#message_modal").addClass("bg-green-400");
             $("#message_modal").html(
-              `<p class="text-white">Payment Success </p>`
+              `<div class='z-50 bg-white'>
+              <p class='text-[#10644D] font-bold text-xs'>Congratulations,Payment Successfully Completed </p>
+              <p>Copy Your Entrance code to Safe Place </p>
+              <div class='flex flex-row gap-x-3 items-center'>
+              <input type="text" class='bg-white px-2 py-2 rounded-md' value=${data.otp} id="myInput">
+
+
+              <button id="copy_code" class='bg-[#10644D] rounded-md px-2 py-2' onclick="copyCode()">Copy Code</button>
+           
+              </div>
+            <a href="/exam/" class='text-white font-bold py-2 px-4 bg-[#10644D] rounded-md '>Explore the Exam</a>
+              </div>`
             );
             setTimeout(() => {
               window.location.href = "/";
-            }, 5000);
+            }, 5000000);
           } else if (data.status === "failed") {
             clearInterval(interval);
             $("#loader").addClass("hidden");
@@ -306,10 +317,29 @@ $(document).ready(function (e) {
         },
         error: function (error) {
           console.log(error);
+          clearInterval(interval);
+          $("#loader").addClass("hidden");
+          $("#message_modal").removeClass("hidden");
+          $("#message_modal").addClass("bg-red-400");
+          $("#message_modal").html(
+            `<p class="text-white">Payment Failed  </p>`
+          );
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 5000);
         },
       });
     }, 2000);
   }
+});
+$(document).ready(function () {
+  $(document).on("click", "#copy_code", function (e) {
+    var copyText = document.getElementById("myInput");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    alert("Copied the text: " + copyText.value);
+  });
 });
 $(document).ready(function () {
   $(".question_answer").on("change", function () {

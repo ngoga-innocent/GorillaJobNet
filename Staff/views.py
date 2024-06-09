@@ -51,14 +51,38 @@ class Exam(View):
         except Faculties.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Faculity does not exist'}, status=200)
 class Faculity(View):
-     def get(self,request):
+    def get(self,request):
           faculities=Faculties.objects.all()
           return render(request,'faculities.html',{'faculities':faculities})
+    def post(self,request):
+          print(request.POST)
+          name=request.POST.get('name')
+          faculity=Faculties.objects.create(name=name)
+          if faculity:
+               return JsonResponse({"status": True})
+          else:
+               return JsonResponse({"status": False})
+    def delete(self, request):
+        try:
+            body = json.loads(request.body)
+            faculity_id = body.get('faculity_id')
+            Faculties.objects.filter(id=faculity_id).delete()
+            return JsonResponse({"status": True})
+        except Exception as e:
+            return JsonResponse({"status": False, "error": str(e)})
+               
+          
              
 def DeleteQuestion(request):
         pass
-def DeleteExam(request):
-        pass        
+def DeleteFaculity(request):
+        try:
+            
+            faculity_id = request.GET.get('faculity_id')
+            Faculties.objects.filter(id=faculity_id).delete()
+            return JsonResponse({"status": True})
+        except Exception as e:
+            return JsonResponse({"status": False, "error": str(e)})         
         
 class QuestionView(View):
     

@@ -20,106 +20,107 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
   <body>
-    <div
-      class="content flex flex-col items-center justify-center py-8 bg-[#10644D]"
-      id=""
-    >
-      <div
-        class="hidden md:block md:flex md:flex-row w-full mb-1 py-2 justify-between px-2 items-center"
-      >
-        <a href="{% url 'homepage' %}">
-          <img
-            src="{% static 'images/logo.jpg' %}"
-            alt=""
-            class="w-20 h-20 rounded-full"
-          />
-        </a>
-        <div>
-          <h1 class="text-2xl font-bold text-white">Gorilla Job Net</h1>
-        </div>
-        <div class="flex flex-row items-center mr-20">
-          <a href="{% url 'homepage' %} " class="text-white">Home</a>
-        </div>
-      </div>
-
-      <h2 class="text-white">WELCOME TO GORILLA JOB NET EXAM PORTAL</h2>
-      <div
-        class="flex flex-row items-center rounded-full bg-white w-[90%] md:w-[70%] border py-2 px-3 my-5"
-      >
-        <i class="fa-solid fa-magnifying-glass" style="color: gray;"></i>
-        <input
-          type="text"
-          name="search"
-          id="search_query"
-          class="search_query w-[80%] mx-2 bg-white"
-          style="border: none;"
-          placeholder="Search Equivalent Department"
-        />
-      </div>
-    </div>
-    <div class="flex flex-col w-[98%] mx-auto">
-      <h2 class="text-center font-bold my-3 md:text-2xl">
-        Available Department
-      </h2>
-      <div id="faculity-list" class="py-4 my-2">
-        {% if faculties %}
-        <div id="faculty-list" class="grid md:grid-cols-6 gap-3 sm:mx-4">
-          {% for faculty in faculties %}
-          <div
-            class="rounded-lg border bg-slate-100 py-2 px-2 md:w-[100%] flex flex-col w-[90%] md:w-[100%] mx-auto relative"
-            id=""
-          >
-            {% if faculty.thumbnail %}
-            <img
-              src="{{faculty.thumbnail.url}}"
-              alt=""
-              class="w-20 h-20 rounded-full"
-            />
-            {% else %}
+    <div class="content flex flex-col" id="">
+      <div class="flex flex-col bg-[#10644D] md:py-2 items-center">
+        <div
+          class="hidden md:block md:flex md:flex-row w-full mb-1 justify-between px-2 items-center"
+        >
+          <a href="{% url 'homepage' %}">
             <img
               src="{% static 'images/logo.jpg' %}"
               alt=""
               class="w-20 h-20 rounded-full"
             />
-
-            {% endif %}
-
-            <a
-              class="hover:cursor-pointer font-bold"
-              href="{% url 'faculty_quizes' faculty.id %}"
-              >{{ faculty.name }}</a
-            >
-            <div
-              class="absolute top-2 right-1 bg-orange-200 text-white text-center rounded-md px-1"
-            >
-              {{faculty.get_faculty_quizzes.count}}
-            </div>
-            <div class="hidden">
-              <p>{{faculty.description }} ...</p>
-            </div>
-            <div
-              class="absolute right-1 bottom-2 gap-x-1 flex flex-row items-center"
-            >
-              <a
-                class="hover:cursor-pointer text-orange-300"
-                href="{% url 'faculty_quizes' faculty.id %}"
-                >View Quiz</a
-              >
-
-              <i
-                class="fa fa-arrow-right"
-                style="color: white;"
-                aria-hidden="true"
-              ></i>
-            </div>
+          </a>
+          <div>
+            <h1 class="text-2xl font-bold text-white">Gorilla Job Net</h1>
           </div>
-          {% endfor %}
+          <div class="flex flex-row items-center mr-20">
+            <a href="{% url 'homepage' %} " class="text-white">Home</a>
+          </div>
         </div>
-        {% else %}
-        <p>
-          No available Faculties please be Patient Our Team is taking care of it
-        </p>
-        {% endif %}
+
+        <h2 class="text-white">WELCOME TO GORILLA JOB NET EXAM PORTAL</h2>
+        <div
+          class="flex flex-row items-center rounded-full bg-white w-[90%] md:w-[70%] border py-2 px-3 my-2"
+        >
+          <i class="fa-solid fa-magnifying-glass" style="color: gray;"></i>
+          <input
+            type="text"
+            name="search"
+            id="search_query"
+            class="search_query w-[80%] mx-2 bg-white"
+            style="border: none;"
+            placeholder="Search Equivalent Department"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col w-[98%] mx-auto">
+        <h2 class="text-center font-bold my-3 md:text-2xl">
+          Available Department
+        </h2>
+        <div id="faculity-list" class="py-4 my-2">
+          {% if faculties %}
+          <div id="faculty-list" class="grid md:grid-cols-6 gap-3 sm:mx-4">
+            {% for faculty in faculties %}
+            <div
+              class="rounded-lg border bg-slate-100 py-2 px-2 md:w-[100%] flex flex-col w-[90%] md:w-[100%] mx-auto relative"
+              id=""
+            >
+              {% if faculty.thumbnail %}
+              <img
+                src="{{faculty.thumbnail.url}}"
+                alt=""
+                class="w-20 h-20 rounded-full"
+              />
+              {% else %}
+              <img
+                src="{% static 'images/logo.jpg' %}"
+                alt=""
+                class="w-20 h-20 rounded-full"
+              />
+
+              {% endif %}
+
+              <a
+                class="hover:cursor-pointer font-bold"
+                href="{% url 'faculty_quizes' faculty.id %}"
+                >{{ faculty.name }}</a
+              >
+              <div
+                class="absolute top-2 right-1 bg-orange-200 text-white text-center rounded-md px-1"
+              >
+                {{faculty.get_faculty_quizzes.count}}
+              </div>
+              <div class="hidden">
+                <p>{{faculty.description }} ...</p>
+              </div>
+              <div
+                class="absolute right-1 bottom-2 gap-x-1 flex flex-row items-center"
+              >
+                <a
+                  class="hover:cursor-pointer text-orange-300"
+                  href="{% url 'faculty_quizes' faculty.id %}"
+                  >View Quiz</a
+                >
+
+                <i
+                  class="fa fa-arrow-right"
+                  style="color: white;"
+                  aria-hidden="true"
+                ></i>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p>
+            No available Faculties please be Patient Our Team is taking care of
+            it
+          </p>
+          {% endif %}
+        </div>
       </div>
     </div>
     {% include "TailwindFooter.html" %}

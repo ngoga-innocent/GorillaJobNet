@@ -78,16 +78,21 @@
       <button
         id="add_option"
         type="button"
-        class="self-start bg-green-500 text-white rounded-full w-8 h-8 font-bold"
+        class="self-start bg-[#10644D] text-white rounded-full w-8 h-8 font-bold"
       >
         <i class="fa-solid fa-plus"></i>
       </button>
-      <button
-        type="submit"
-        class="self-end mx-[10%] bg-green-500 text-white rounded-md px-5 py-2 font-bold"
-      >
-        Save
-      </button>
+      <div class="flex flex-row items-center self-end mx-[10%]">
+        <button
+          type="submit"
+          class="bg-[#10644D] text-white rounded-md px-5 py-2 font-bold"
+        >
+          Save Question
+        </button>
+        <div
+          class="submit_question_loaded hidden animate-spin w-6 h-6 rounded-full border-2 border-[#10644D] border-dashed"
+        ></div>
+      </div>
     </form>
   </div>
   <div id="quiz_questions">

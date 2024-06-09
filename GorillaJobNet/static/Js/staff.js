@@ -34,7 +34,7 @@ $(document).ready(function () {
     const formData = $(this).serialize();
     $("#loader2").removeClass("hidden");
     $.ajax({
-      url: "/staff/add_exam",
+      url: "/staff/exam",
       method: "POST",
       data: formData,
       success: function (data) {
@@ -142,6 +142,7 @@ $(document).ready(function () {
   });
   $("#questions").on("submit", function (e) {
     e.preventDefault();
+    $(".submit_question_loaded").removeClass("hidden");
     const options = [];
     var examId = localStorage.getItem("exam_id");
     $(".option-group").each(function () {
@@ -167,6 +168,7 @@ $(document).ready(function () {
       success: function (data) {
         $("#questions")[0].reset();
         getQuestions();
+        $(".submit_question_loaded").addClass("hidden");
       },
       error: function (xhr, status, error) {
         console.error("AJAX Error: " + status + error);
@@ -196,8 +198,10 @@ function getQuestions() {
               <div class="gap-1">
                 <h2 class="font-bold">${question.text}</h2>
                 ${optionsHtml}
+
+                <button type="button" class="delete_question_btn" data-quiz-id="${question.id}">Delete</button>
               </div>
-              <button>Delete</button>
+              
             `);
         });
       }
@@ -207,6 +211,25 @@ function getQuestions() {
     },
   });
 }
+$(document).on("click", ".delete_question_btn", function (e) {
+  e.preventDefault();
+  const quizId = $(this).data("quiz-id");
+  console.log("quizId");
+  $.ajax({
+    url: "/staff/delete_question",
+    method: "POST",
+    data: { quiz_id: quizId },
+    success: function (data) {
+      console.log(data);
+      if (data.status == "success") {
+        getQuestions();
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("AJAX Error: " + status + error);
+    },
+  });
+});
 $(document).ready(function () {
   $("#quiz_button_edit").on("click", function (e) {
     e.preventDefault();
@@ -215,4 +238,64 @@ $(document).ready(function () {
     localStorage.setItem("exam_id", exam_id);
     window.location.href = "/staff/add_questions";
   });
+});
+$("#add_faculity_button").on("click", function () {
+  $(".faculity_modal").removeClass("hidden");
+});
+$("#faculity_form").on("submit", function (e) {
+  e.preventDefault(); // Prevent the default form submission
+  const formData = $(this).serialize();
+  $("#loader3").removeClass("hidden");
+  $.ajax({
+    url: "/staff/faculity",
+    method: "POST",
+    data: formData,
+    success: function (data) {
+      console.log(data);
+      if (data.status == true) {
+        $("#message_modal3").removeClass("hidden");
+        $("#message_modal3").addClass("bg-green-300");
+        $("#message_modal3").html(
+          `<div class="">Faculity Created Successfully</div>`
+        );
+        window.location.reload();
+      } else {
+        $("#message_modal3").removeClass("hidden");
+        $("#message_modal3").addClass("bg-red-300");
+        $("#message_modal3").html(
+          `<div class="">Failed to create a Faculity</div>`
+        );
+        window.location.reload();
+      }
+    },
+    error: function (xhr, status, error) {
+      alert("Error Occured");
+    },
+  });
+});
+
+$("#faculity_button_delete").on("click", function (e) {
+  e.preventDefault();
+  const faculity_id = $(this).data("faculity-id");
+  console.log(faculity_id);
+  const confirmation = confirm("Are you sure you want to delete this faculty?");
+  if (confirmation) {
+    $.ajax({
+      url: "/staff/delete-faculity",
+      method: "GET",
+      data: { faculity_id: faculity_id },
+      success: function (data) {
+        if (data.status == true) {
+          alert("Faculity Deted Successfully");
+        } else {
+          alert("Failed to delete Faculity");
+        }
+        window.location.reload();
+      },
+      error: function (xhr, status, error) {
+        alert("Error deleting Faculity");
+        window.location.reload();
+      },
+    });
+  }
 });
