@@ -65,7 +65,7 @@ def signup_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, "Account created successfully and you are now logged in.")
-            next_url = request.POST.get('next', reverse_lazy('home'))
+            next_url = request.POST.get('next', reverse_lazy('homepage'))
             return HttpResponseRedirect(next_url)
         else:
             messages.error(request, "There was an issue logging you in. Please try logging in manually.")
