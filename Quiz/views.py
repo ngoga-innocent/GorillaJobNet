@@ -42,8 +42,9 @@ def FaculityQuizes(request,pk):
 # @login_required(login_url='/account/')
 def CheckUserPaidExam(request): 
     exam_id=request.GET.get('exam_id')
-    questions=Quiz.objects.get(id=exam_id).number_of_questions
-    return JsonResponse({"paid":False,"question_number":questions},status=200)
+    questions=Quiz.objects.get(id=exam_id)
+    print(questions.number_of_questions)
+    return JsonResponse({"paid":False,"question_number":questions.number_of_questions},status=200)
     # otp=request.GET.get('otp')
     # if request.user.is_authenticated and otp:
     #     user=User.objects.get(pk=request.user.id)
@@ -152,7 +153,7 @@ def QuizQuestions(request,pk):
                             }   
                         return  JsonResponse(response) 
                     else:
-                        UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=code,correct=correct)    
+                        UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=otp,correct=correct)    
 
                         if int(question_number)+1 >len(questions):
                             return GetAnswer(quiz.id,code)

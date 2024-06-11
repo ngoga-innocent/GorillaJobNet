@@ -16,7 +16,7 @@
       data-quiz-name="{{ quiz.name }}"
       data-quiz-questions="{{ quiz.number_of_questions }}"
     >
-      Start Now
+      Start Exam
     </button>
   </div>
   {% endfor %}
@@ -45,6 +45,7 @@
   </div>
 </div>
 <div
+  id="spinnerOverlay"
   class="spinnerOverlay w-full h-full absolute top-0 justify-center items-center flex flex-col hidden"
   style="background-color: rgba(0, 0, 0, 0.7);"
 >

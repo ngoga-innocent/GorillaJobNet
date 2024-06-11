@@ -83,11 +83,6 @@
 
               {% endif %}
 
-              <a
-                class="hover:cursor-pointer font-bold"
-                href="{% url 'faculty_quizes' faculty.id %}"
-                >{{ faculty.name }}</a
-              >
               <div
                 class="absolute top-2 right-1 bg-orange-200 text-white text-center rounded-md px-1"
               >
@@ -96,20 +91,25 @@
               <div class="hidden">
                 <p>{{faculty.description }} ...</p>
               </div>
-              <div
-                class="absolute right-1 bottom-2 gap-x-1 flex flex-row items-center"
-              >
+              <div class="gap-x-1 flex flex-row justify-between items-center">
                 <a
-                  class="hover:cursor-pointer text-orange-300"
+                  class="hover:cursor-pointer font-bold text-xs max-w-[40] text-start"
                   href="{% url 'faculty_quizes' faculty.id %}"
-                  >View Quiz</a
+                  >{{ faculty.name }}</a
                 >
+                <div class="flex flex-row items-center">
+                  <a
+                    class="hover:cursor-pointer text-[#10644D] md:text-xs"
+                    href="{% url 'faculty_quizes' faculty.id %}"
+                    >View Quiz</a
+                  >
 
-                <i
-                  class="fa fa-arrow-right"
-                  style="color: white;"
-                  aria-hidden="true"
-                ></i>
+                  <i
+                    class="fa fa-arrow-right"
+                    style="color: orange;"
+                    aria-hidden="true"
+                  ></i>
+                </div>
               </div>
             </div>
             {% endfor %}

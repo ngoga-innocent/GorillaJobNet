@@ -15,14 +15,16 @@ $(document).ready(function () {
           if (data.faculties.length > 0) {
             $.each(data.faculties, function (index, faculty) {
               var facultyItem =
-                '<div class="rounded-lg py-2 px-2 md:w-[100%] flex flex-col w-[60%] mx-auto relative" id="faculity">' +
+                '<div class="rounded-lg py-2 px-2 md:w-[100%] flex flex-col w-[80%] mx-auto relative" id="faculity">' +
                 '<img src="' +
                 (faculty.thumbnail || "/static/images/logo.jpg") +
                 '" alt="" class="w-20 h-20 rounded-full" />' +
-                '<a class="hover:cursor-pointer text-white font-bold" href="/exam/' +
+                '<a class="hover:cursor-pointer text-white max-w-[40%] text-xs font-bold" href="/exam/' +
                 faculty.id +
                 '">' +
+                '<p class="text-xs max-w-[40%]">' +
                 faculty.name +
+                "</p>" +
                 "</a>" +
                 '<div class="absolute top-2 right-1 bg-orange-200 text-white text-center rounded-md px-1">' +
                 faculty.quiz_count +
@@ -33,7 +35,7 @@ $(document).ready(function () {
                 '<div class="absolute right-1 bottom-2 gap-x-1 flex flex-row items-center">' +
                 '<a class="hover:cursor-pointer text-orange-300" href="/exam/' +
                 faculty.id +
-                '">View Quiz</a>' +
+                '">View Exams</a>' +
                 '<i class="fa fa-arrow-right" style="color: white;" aria-hidden="true"></i>' +
                 "</div>" +
                 "</div>";
@@ -50,8 +52,10 @@ $(document).ready(function () {
   });
 });
 $(document).ready(function (e) {
-  $(".start-button").on("click", function () {
-    $(".spinnerOverlay").removeClass("hidden");
+  // console.log("clicked clicked");
+  $(".start-button").on("click", function (e) {
+    e.preventDefault();
+    $("#spinnerOverlay").removeClass("hidden");
     const quizId = this.getAttribute("data-quiz-id");
     const quizName = this.getAttribute("data-quiz-name");
     const quizQuestions = this.getAttribute("data-quiz-questions");
@@ -67,6 +71,7 @@ $(document).ready(function (e) {
         let header;
         let footer;
         $(".spinnerOverlay").addClass("hidden");
+        console.log(data.question_number);
         if (data.question_number < 1) {
           alert("This Exam has no Questions Available please Try other Exams");
         }
@@ -96,8 +101,6 @@ $(document).ready(function (e) {
     <p class="text-sm  font-bold"> 20000 Rwf</p>
     </div>
 
-    
-
     </div>`;
           footer = `<button id="cancel"
         class="cancel px-2 py-2 rounded-md text-white font-bold bg-red-400"
@@ -111,7 +114,7 @@ $(document).ready(function (e) {
       </button>`;
         } else {
           content = `<div>
-           
+
                 <div class='flex flex-row gap-x-3'>
 
     <h5 class="text-sm text-gray-500">Name:</h5>
@@ -129,7 +132,7 @@ $(document).ready(function (e) {
       >
         Cancel
       </button>
-      <button 
+      <button
         class="confirm px-4 py-2 rounded-md text-white font-bold bg-[#10644D]"
       >
         Start
@@ -152,6 +155,7 @@ $(document).ready(function (e) {
     $("#modal-content").empty();
     $("#modal-header").empty();
     $("#modal-footer").empty();
+    $(".spinnerOverlay").addClass("hidden");
   });
   $(document).on("submit", ".code_check", function (e) {
     e.preventDefault();
@@ -188,16 +192,16 @@ $(document).ready(function (e) {
   });
   $(document).on("click", ".confirm", function () {
     const quizId = $(".start-button").data("quiz-id");
-    window.location.href = "/exam/quiz/" + quizId;
+    window.location.href = "/exam/exam/" + quizId;
     $(".modal-container").addClass("hidden");
   });
-  ///////////////////////////For The Subscription Modal
-  // $(document).on("click", ".Pay", function () {
-  //   $(".modal-container").addClass("hidden");
-  //   const exam_id = this.getAttribute("data-quiz-id");
-  //   // alert(exam_id);
-  //   $(".payment-modal").removeClass("hidden");
-  // });
+  //   ///////////////////////////For The Subscription Modal
+  //   // $(document).on("click", ".Pay", function () {
+  //   //   $(".modal-container").addClass("hidden");
+  //   //   const exam_id = this.getAttribute("data-quiz-id");
+  //   //   // alert(exam_id);
+  //   //   $(".payment-modal").removeClass("hidden");
+  //   // });
   $(document).on("click", ".cancel", function () {
     $(".modal-container").addClass("hidden");
   });
@@ -267,7 +271,6 @@ $(document).ready(function (e) {
               <div class='flex flex-row gap-x-3 items-center'>
               <input type="text" class='bg-white px-2 py-2 rounded-md' value=${data.otp} id="myInput">
 
-
               <button id="copy_code" class='bg-[#10644D] rounded-md px-2 py-2' onclick="copyCode()">Copy Code</button>
               <a href="/exam/exam/${exam_id}" class='text-white text-xs font-bold py-2 px-4 bg-[#10644D] rounded-md '>Explore the Exam</a>
               </div>
@@ -313,9 +316,8 @@ $(document).ready(function (e) {
               <div class='flex flex-row gap-x-3 items-center'>
               <input type="text" class='bg-white px-2 py-2 rounded-md' value=${data.otp} id="myInput">
 
-
               <button id="copy_code" class='bg-[#10644D] rounded-md px-2 py-2' onclick="copyCode()">Copy Code</button>
-           
+
               </div>
             <a href="/exam/" class='text-white font-bold py-2 px-4 bg-[#10644D] rounded-md '>Explore the Exam</a>
               </div>`
