@@ -37,14 +37,21 @@
             <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="#">Service</a></li>
             {% if user.is_authenticated %}
             <div>
-              <ul class="flex flex-col item-center md:flex-row">
+              <ul class="flex flex-col item-center md:flex-row gap-x-1">
+                
+                <li class="btn btn-primary px-2 py-2 rounded-md">
+                  <p class="">{{user.username}}</p>
+                </li>
+                {% if user.is_staff %}
+                <li class="px-2 py-2 bg-[#10644D] rounded-md hover:bg-green-500 hover:transition ease-in">
+                  <a href="{% url 'staff_home'  %}" class="">Dashboard</a>
+                </li>
+                  
+                {% endif %}
                 <li class="">
                   <button id="login" class=" bg-transparent item-center justify-center px-2 py-2 bg-[#00cba9] rounded-md">
                     <a class=" text-red-400" href="{% url 'logout' %}">Logout</a>
                   </button>
-                </li>
-                <li class="">
-                  <button class="btn btn-primary px-2 py-2 bg-[#10644D] rounded-md">{{user.username}}</button>
                 </li>
               </ul>
             </div>

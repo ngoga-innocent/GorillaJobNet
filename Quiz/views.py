@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from Payment.CheckExamPaid import CheckUserSubscription,CheckUserPayment,CheckOTP
 from django.contrib.auth.models import User
 from Payment.models import OTP
+from django.template.loader import render_to_string
 # Create your views here.
 def quizHome(request):
     context = {} 
@@ -40,7 +41,9 @@ def FaculityQuizes(request,pk):
 
 # @login_required(login_url='/account/')
 def CheckUserPaidExam(request): 
-    return JsonResponse({"paid":False},status=200)
+    exam_id=request.GET.get('exam_id')
+    questions=Quiz.objects.get(id=exam_id).number_of_questions
+    return JsonResponse({"paid":False,"question_number":questions},status=200)
     # otp=request.GET.get('otp')
     # if request.user.is_authenticated and otp:
     #     user=User.objects.get(pk=request.user.id)
@@ -62,10 +65,118 @@ def QuizQuestions(request,pk):
     try:
         quiz=get_object_or_404(Quiz,pk=pk)
         questions=quiz.get_quiz_questions()
-        # paginator = Paginator(question, 50)
-        # page_number = request.GET.get("page")
-        # page_obj = paginator.get_page(page_number)
-        context={"questions":questions}
+        question_Number=0
+        if len(questions)>question_Number:
+            has_next=True
+        else:
+            has_next=False    
+        if request.method == 'POST':
+            question_id = request.POST.get('question_id')
+            user_response = request.POST.get('answer_id')
+            code=request.POST.get('code')
+            user=request.user
+            question_number=request.POST.get('question_number')
+              
+            print(int(question_number) +1,len(questions),code)
+            try:
+                question=Question.objects.get(id=question_id)
+            
+                quiz=question.quiz
+                answer=Answer.objects.get(id=user_response)
+                if not answer:
+                    return JsonResponse({"status": "error"}, status=200)
+                if answer and answer.correct:
+                    correct=True
+                else:
+                    correct=False
+                try:
+                    otp=OTP.objects.get(otp=code)
+                    ten_minutes_ago = timezone.now() - timezone.timedelta(minutes=10)
+                    if request.user.is_authenticated:
+                        user_done_question=UserSubmission.objects.get(code=otp,user=user,question=question_id,created_on__gte=ten_minutes_ago)
+                        user_done_question.user_response=answer
+                        user_done_question.correct=correct
+                        user_done_question.save()
+                    else:
+                        user_done_question=UserSubmission.objects.get(code=otp,question=question_id,created_on__gte=ten_minutes_ago)    
+                        user_done_question.user_response=answer
+                        user_done_question.correct=correct
+                        user_done_question.save()
+                    
+                    if int(question_number)+1 >len(questions):
+                        return GetAnswer(quiz.id,code)
+                        # print(answer)
+                        
+                    elif len(questions)== int(question_number) +1:
+                         has_next=False
+                         html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
+                         response={
+                             'has_next':has_next,
+                             'status':'success',
+                             'html':html
+                         }
+                    else:
+                        has_next=True 
+                        html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)+1],'has_next':has_next})
+                        response={
+                            'html': html,
+                            'has_next': has_next,
+                            'status':'success'
+                        }
+                    return JsonResponse(response)            
+                    
+                    # return JsonResponse({"status": "success"}, status=200)
+                    
+                except UserSubmission.DoesNotExist:            
+                    if request.user.is_authenticated:
+                        UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,user=user,code=otp,correct=correct)
+                        if int(question_number)+1 >len(questions):
+                            return GetAnswer(quiz.id,code)
+                            
+                            
+                        elif len(questions)==int(question_number) + 1:
+                            has_next=False
+                            html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
+                            response={
+                             'has_next':has_next,
+                             'status':'success',
+                             'html':html
+                            }
+                        else:
+                             html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)+1],'has_next':has_next})
+                             has_next=True
+                             response={
+                            'html': html,
+                            'has_next': has_next,
+                            'status':'success'
+                            }   
+                        return  JsonResponse(response) 
+                    else:
+                        UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=code,correct=correct)    
+
+                        if int(question_number)+1 >len(questions):
+                            return GetAnswer(quiz.id,code)
+                            
+                        elif len(questions)==int(question_number) + 1:
+                            has_next=False
+                            response={
+                             'has_next':has_next,
+                             'status':'success'
+                            }
+                        else:
+                             html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)+1],'has_next':has_next})
+                             has_next=True
+                             response={
+                            'html': html,
+                            'has_next': has_next,
+                            'status':'success'
+                            }   
+                        return  JsonResponse(response) 
+                   
+            except Answer.DoesNotExist:
+                return JsonResponse({"status": "choose one please"}, status=200)  
+        
+        context={"question":questions[question_Number],"has_next":has_next}
         return render(request,'questions.html',context)
     except Question.DoesNotExist:
         return render(request,'404.html') 
@@ -77,53 +188,56 @@ def SearchDepartent(request):
 # @login_required(login_url='/account/')
 def SubmitUserResponse(request):
     if request.method == 'POST':
-        question_id = request.POST.get('question_id')
-        user_response = request.POST.get('answer_id')
-        code=request.POST.get('code')
-        user=request.user
+        pass
+        # question_id = request.POST.get('question_id')
+        # user_response = request.POST.get('answer_id')
+        # code=request.POST.get('code')
+        # user=request.user
         
-        try:
-            question=Question.objects.get(id=question_id)
+        # try:
+        #     question=Question.objects.get(id=question_id)
         
-            quiz=question.quiz
-            answer=Answer.objects.get(id=user_response)
-            if not answer:
-                return JsonResponse({"status": "error"}, status=200)
-            if answer and answer.correct:
-                correct=True
-            else:
-                correct=False
-            try:
-                code=OTP.objects.get(otp=code)
-                ten_minutes_ago = timezone.now() - timezone.timedelta(minutes=10)
-                if request.user.is_authenticated:
-                    user_done_question=UserSubmission.objects.get(code=code,user=user,question=question_id,created_on__gte=ten_minutes_ago)
-                else:
-                    user_done_question=UserSubmission.objects.get(code=code,question=question_id,created_on__gte=ten_minutes_ago)    
-                user_done_question.user_response=answer
-                user_done_question.correct=correct
-                user_done_question.save()
-                return JsonResponse({"status": "success"}, status=200)
+        #     quiz=question.quiz
+        #     answer=Answer.objects.get(id=user_response)
+        #     if not answer:
+        #         return JsonResponse({"status": "error"}, status=200)
+        #     if answer and answer.correct:
+        #         correct=True
+        #     else:
+        #         correct=False
+        #     try:
+        #         code=OTP.objects.get(otp=code)
+        #         ten_minutes_ago = timezone.now() - timezone.timedelta(minutes=10)
+        #         if request.user.is_authenticated:
+        #             user_done_question=UserSubmission.objects.get(code=code,user=user,question=question_id,created_on__gte=ten_minutes_ago)
+        #         else:
+        #             user_done_question=UserSubmission.objects.get(code=code,question=question_id,created_on__gte=ten_minutes_ago)    
+        #         user_done_question.user_response=answer
+        #         user_done_question.correct=correct
+        #         user_done_question.save()
+        #         return JsonResponse({"status": "success"}, status=200)
                 
-            except UserSubmission.DoesNotExist:            
-                if request.user.is_authenticated:
-                    user_answer=UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,user=user,code=code,correct=correct)
-                else:
-                    user_answer=UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=code,correct=correct)    
+        #     except UserSubmission.DoesNotExist:            
+        #         if request.user.is_authenticated:
+        #             user_answer=UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,user=user,code=code,correct=correct)
+        #         else:
+        #             user_answer=UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=code,correct=correct)    
 
-                if user_answer:
-                    return JsonResponse({"status": "success"}, status=200)
-                else:
-                    print(user_answer)
-                    return JsonResponse({"status": "error to create"}, status=400)
-        except Answer.DoesNotExist:
-            return JsonResponse({"status": "choose one please"}, status=200)        
+        #         if user_answer:
+        #             return JsonResponse({"status": "success"}, status=200)
+        #         else:
+        #             print(user_answer)
+        #             return JsonResponse({"status": "error to create"}, status=400)
+        # except Answer.DoesNotExist:
+        #     return JsonResponse({"status": "choose one please"}, status=200)        
 # @login_required(login_url='/account/')
-def GetAnswer(request,id):
+def GetAnswer(id,otp):
    
-    user_id = request.user.id
-    otp=request.GET.get('otp')
+    # user_id = request.user.id
+    # otp=request.GET.get('otp')
+    # print(CheckOTP)
     if CheckOTP(otp):
+
         try:
             quiz=Quiz.objects.get(id=id)
             Otp=OTP.objects.get(otp=otp)
@@ -151,23 +265,45 @@ def GetAnswer(request,id):
             elif timezone.now()>Otp.end_validated_date:
                 Otp.valid=False
                 Otp.save()
-
-            return JsonResponse(response_data,status=200)
+            # print(marks)
+            return JsonResponse({"marks":round(marks,2)},status=200)
+            # return round(marks,2)
             
         except Quiz.DoesNotExist:
             return JsonResponse({"error":"error"},status=200) 
-       
-
-    return JsonResponse({"You are not Allowed to Access This Exam,Please pay first"},status=200)
+    return JsonResponse({"reject_message":"You are not Allowed to Access This Exam,Please Validate Your Code"},status=200)    
 # @login_required(login_url='/account/')
-def GetAllAnswer(request,id):
-  
-    quiz = get_object_or_404(Quiz, id=id)
-    quiz_questions = quiz.get_quiz_questions()
-    context = {"quiz_questions": quiz_questions,"quiz_name":quiz.name}
-    return render(request, 'answers.html', context) 
+def GetAllAnswer(request):
+    # #
+    # id="909b80c2-7e31-4be6-b53b-01000d23ea2f"
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        id=request.GET.get('quiz_id')
+        code=request.GET.get('otp')
+        print('Ajax request')
+        quiz = get_object_or_404(Quiz, id=id)
+        code=get_object_or_404(OTP,otp=code)
+        quiz_questions = quiz.get_quiz_questions()
+        user_answers=UserSubmission.objects.filter(code=code,quiz=quiz)
+        print(user_answers)
+        print(id)
+        context = {"quiz_questions": quiz_questions,"quiz_name":quiz.name}
+        html = render_to_string('partial_answer.html', {"quiz_questions":quiz_questions,"quiz_name":quiz.name,"user_answers":user_answers})
+        response={
+            "html_content": html,
+        }
+        print("response")
+        return JsonResponse(response)
+    else:    
+        return render(request, 'answers.html') 
         
+from django.middleware.csrf import get_token
 
+def get_csrf_token(request):
+    # Get the CSRF token using Django's get_token() function
+    csrf_token = get_token(request)
+    
+    # Return the CSRF token in a JSON response
+    return JsonResponse({'token': csrf_token})
           
 
 

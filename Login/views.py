@@ -79,7 +79,7 @@ def login_view(request):
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            next_url = request.POST.get('next', reverse_lazy('home'))
+            next_url = request.POST.get('next', reverse_lazy('homepage'))
             login(request, user)
             return redirect('homepage')  # or some other page
         else:

@@ -65,7 +65,7 @@ class PaymentView(View):
                     # print("otp_save")
                     if otp_save and request.user.is_authenticated:
 
-                        save_payment=Payment.objects.create(user=request.user,otp=otp_save, paid_exam=exam,ref=make_payment.json().get('ref'))
+                        save_payment=Payment.objects.create(user=request.user,otp=otp_save,ref=make_payment.json().get('ref'))
                     else:
                         save_payment=Payment.objects.create( otp=otp_save,ref=make_payment.json().get('ref'))    
                 else:    

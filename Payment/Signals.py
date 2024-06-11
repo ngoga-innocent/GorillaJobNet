@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Payment, Subscription
+from .models import Payment, Subscription,OTP
 import logging
 from django.utils import timezone
 
@@ -34,6 +34,19 @@ def subscription_end_date(sender,instance,created,**kwargs):
             instance.save(update_fields=['end_date'])
         elif instance.subscription_type =='month':
             instance.end_date = timezone.now() + timezone.timedelta(weeks=4)
-            instance.save(update_fields=['end_date'])        
+            instance.save(update_fields=['end_date'])   
+
+@receiver(post_save, sender=OTP)        
+def Otp_end_date(sender,instance,created,**kwargs):
+    if created:
+        if instance.type =='day':
+            instance.end_date = timezone.now() + timezone.timedelta(days=1)
+            instance.save(update_fields=['end_validated_date']) 
+        elif instance.type =='week':
+            instance.end_date = timezone.now() + timezone.timedelta(weeks=1)
+            instance.save(update_fields=['end_validated_date'])
+        elif instance.type =='month':
+            instance.end_date = timezone.now() + timezone.timedelta(weeks=4)
+            instance.save(update_fields=['end_validated_date'])                     
     
 

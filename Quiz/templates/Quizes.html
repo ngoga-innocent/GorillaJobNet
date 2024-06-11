@@ -22,7 +22,7 @@
   {% endfor %}
 </div>
 {% else %}
-<div>No Exam Available for this Department</div>
+<div>No Exam Available for this Subject</div>
 {% endif %}
 
 <div
@@ -43,6 +43,14 @@
       class="modal-spinner hidden w-7 h-7 items-center justify-center self-center rounded-full border-2 border-dashed border-black animate-spin"
     ></div>
   </div>
+</div>
+<div
+  class="spinnerOverlay w-full h-full absolute top-0 justify-center items-center flex flex-col hidden"
+  style="background-color: rgba(0, 0, 0, 0.7);"
+>
+  <div
+    class="w-14 h-14 rounded-full border-2 border-dashed border-[#10644D] animate-spin"
+  ></div>
 </div>
 <div
   id="modal-container"
@@ -68,19 +76,7 @@
 
     <form id="quiz_payment_form">
       {% csrf_token %}
-      <!-- <div class="flex flex-row gap-x-2">
-                <input name="subsciption_type" value="one" required type="radio">
-                <label for="">1 Exam 500 Rwf</label>
-              </div>
 
-              <div class="flex flex-row gap-x-2">
-                <input name="subsciption_type" value="day" required type="radio">
-                <label for="">Day Subscription on 5000 Rwf</label>
-              </div>
-              <div class="flex flex-row gap-x-2">
-                <input name="subsciption_type" value="week" required type="radio">
-                <label for="">Week Subscription on 10000 Rwf</label>
-              </div> -->
       <div class="flex flex-row gap-x-2">
         <input name="subsciption_type" value="one" required type="hidden" />
         <label for="">Exam Payment 500 Rwf</label>
@@ -99,9 +95,16 @@
         <button
           type="submit"
           id="quiz_pay_Button"
-          class="bg-green-500 px-4 py-2 text-white font-bold rounded-md"
+          class="bg-[#10644D] px-4 py-2 text-white font-bold rounded-md"
         >
           Pay Now
+        </button>
+        <button
+          type="button"
+          id="cancel"
+          class="cancel bg-orange-500 px-4 py-2 text-white font-bold rounded-md"
+        >
+          Cancel
         </button>
         <div
           id="loader1"

@@ -1,0 +1,60 @@
+<div
+  class="bg-white px-4 rounded-lg flex flex-col items-start justify-center min-w-[80%] relative py-5"
+>
+  {% if question %}
+  <div class="w-[100%] items-center justify-center">
+    <p class="text-lg font-semibold">
+      {{ question.text }}
+    </p>
+    <div class="my-4">
+      {% for answer in question.get_question_answer %}
+      <div class="flex flex-row gap-x-2">
+        <input type="hidden" value="{{ question.id }}" id="question_id" />
+        <input
+          type="radio"
+          name="question_radio"
+          value="{{ answer.id }}"
+          class="question_answer"
+        />
+        <p class="ml-4 text-gray-700">{{ answer.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <p>No questions available for this quiz</p>
+  {% endif %}
+  <div class="flex flex-row gap-x-1">
+    {% if has_next %}
+
+    <button
+      type="submit"
+      id="next"
+      data-quiz-id="{{ question.id }}"
+      data-questionId="{{ question.id }}"
+      class="self-end py-2 px-4 bg-[#10644D] my-2 rounded-md items-center text-white"
+    >
+      Next
+    </button>
+    {% else %}
+    <div class="flex flex-row justify-between mx-5 gap-x-8">
+      <button
+        id="next"
+        data-questionId="{{ question.id }}"
+        class="py-2 px-4 bg-[#10644D] my-2 rounded-md items-center text-white"
+      >
+        Finish
+      </button>
+      <button
+        type="button"
+        id="Get_results"
+        data-questionId="{{ question.id }}"
+        class="hidden py-2 px-4 bg-[#10644D] my-2 rounded-md items-center text-white"
+      >
+        Get Result
+      </button>
+    </div>
+
+    {% endif %}
+  </div>
+</div>

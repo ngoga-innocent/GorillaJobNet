@@ -1,0 +1,49 @@
+<div id="answer" class="flex flex-row gap-x-5 flex-wrap w-[90%]">
+  {% if quiz_questions %}
+  <div>
+    {% for user_answer in user_answers %}
+    <div class="my-4">
+      <h4 class="font-bold flex flex-row items-center gap-x-5">
+        {{ forloop.counter }}.{{ user_answer.question.text }} <br />
+        {% if user_answer.user_response.correct %}
+        <i
+          class="fa-solid fa-check"
+          style="font-size: x-large; color: #10644d;"
+        ></i>
+        {% else %}
+        <i class="fa-solid fa-x" style="font-size: x-large; color: brown;"></i>
+        {% endif %}
+      </h4>
+      <p>You have Chosen : {{user_answer.user_response.text}}</p>
+      {% for answer in user_answer.question.get_question_answer %}
+      <div class="mx-7">
+        {% if answer.correct %}
+        <div
+          class="flex flex-row gap-x-3 justify-between items-center border-[#10644D] border-2 px-2 rounded-md w-[100%] py-2"
+        >
+          <p>{{forloop.counter}}. {{answer.text}}</p>
+          <div class="flex flex-row items-center mx-2">
+            <div
+              class="w-6 h-6 rounded-full items-center flex flex-col justify-center bg-green-500"
+            >
+              <i
+                class="fa fa-check"
+                aria-hidden="true"
+                style="color: white;"
+              ></i>
+            </div>
+            <p>Correct Answer</p>
+          </div>
+        </div>
+        {% else %}
+        <div class="py-2">{{forloop.counter}}.{{answer.text}}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>Sorry, Unknown Error, check your internet and Try again</p>
+  {% endif %}
+</div>

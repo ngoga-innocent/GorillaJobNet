@@ -1,4 +1,4 @@
-{% extends 'staff_base.html' %} {% block Heading %} Faculity <br />
+{% extends 'staff_base.html' %} {% block Heading %} Subject <br />
 {% endblock Heading %}
 <br />
 {% block content %}
@@ -7,10 +7,10 @@
     id="add_faculity_button"
     class="self-end py-2 px-3 bg-[#10644D] text-white rounded-md"
   >
-    Add Faculity
+    Add Subject
   </button>
   <div>
-    <h4 class="text-md font-bold">All Availble Faculities</h4>
+    <h4 class="text-md font-bold">All Availble Subject</h4>
     <div class="flex flex-row flex-wrap gap-2">
       {% for faculity in faculities %}
 
@@ -45,7 +45,7 @@
         style="color: white; font-size: x-large;"
       ></i>
     </button>
-    <h2 class="text-lg font-bold my-1">Add a New Faculity</h2>
+    <h2 class="text-lg font-bold my-1">Add a New Subject</h2>
     <form id="faculity_form" class="self-center px-3">
       {% csrf_token %}
       <input
@@ -62,7 +62,7 @@
           class="py-2 px-4 bg-[#10644D] rounded-md text-white font-bold"
           type="submit"
         >
-          Add Faculity
+          Add Subject
         </button>
         <div
           id="loader3"

@@ -22,39 +22,7 @@
       id="quiz_container"
       class="flex flex-col items-center justify-center bg-white p-6 rounded-md shadow-md w-full min-h-screen max-h-[50%] overflow-y-scroll"
     >
-      {% csrf_token %}
-      <div
-        class="bg-white px-4 rounded-lg flex flex-col items-start justify-center min-w-[80%] relative py-5"
-      >
-        {% for question in questions %}
-        <div class="w-[100%] items-center justify-center">
-          <p class="text-lg font-semibold">
-            {{ forloop.counter }}.{{ question.text }}
-          </p>
-          <div class="my-4">
-            {% for answer in question.get_question_answer %}
-            <div class="flex flex-row gap-x-2">
-              <input
-                type="radio"
-                name="{{question.id}}"
-                value="{{answer.id}}"
-                class="question_answer"
-              />
-              <p class="ml-4 text-gray-700">{{ answer.text }}</p>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-
-        {% endfor %}
-        <button
-          id="Get_results"
-          data-questionId="{{question.id}}"
-          class="py-2 px-4 bg-[#10644D] my-2 rounded-md items-center text-white"
-        >
-          Submit
-        </button>
-      </div>
+      {% csrf_token %} {% include 'quiz_question_partial.html' %}
     </form>
     <div class="hidden spinnerContainer w-full min-h-screen">
       <div class="spinner"></div>

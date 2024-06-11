@@ -37,13 +37,15 @@ def CheckUserSubscription(user):
 def CheckOTP(otp):
     try:
         otp=OTP.objects.get(otp=otp)
+        
         if otp.valid:
             if otp.type !='one' and timezone.now() >=otp.end_validated_date:
                 otp.valid=False
                 otp.save()
                 return False
             return True
-        return False
+        else:
+            return False
         
     except OTP.DoesNotExist:
         return False

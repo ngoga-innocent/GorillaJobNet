@@ -13,40 +13,10 @@
     />
     <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
     <script>
-      function openFullscreen() {
-        var elem = document.documentElement;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen().catch((err) => {
-            alert(
-              `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
-            );
-          });
-        } else if (elem.mozRequestFullScreen) {
-          /* Firefox */
-          elem.mozRequestFullScreen();
-        } else if (elem.webkitRequestFullscreen) {
-          /* Chrome, Safari & Opera */
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          /* IE/Edge */
-          elem.msRequestFullscreen();
-        }
-      }
+      
+      
 
-      function closeFullscreen() {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-          /* Firefox */
-          document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
-          /* Chrome, Safari & Opera */
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-          /* IE/Edge */
-          document.msExitFullscreen();
-        }
-      }
+      
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -58,6 +28,9 @@
   </head>
 
   <body class="flex flex-col max-h-screen overflow-y-scroll" id="answers">
+    <div class="spinnerContainer min-h-screen fixed w-full flex flex-col" style="background-color: rgba(0,0,0,0.8);z-index: 99999;">
+    <div class="rounded-full w-14 h-14 border-2 border-dashed border-[#10644D] animate-spin"></div>
+    </div>
      <div class=" h-[100%] relative">
       <div class="flex flex-row justify-between items-center px-5 py-2 md:my-2">
       <div>
@@ -136,50 +109,52 @@
             
         </ul>
     </div>
-    <div class="flex flex-row w-full max-h-[80%] overflow-y-scroll gap-x-10 ">
+    <div class="flex flex-row w-full max-h-[70%] overflow-y-scroll gap-x-10 ">
       <div class="flex flex-row gap-x-2 flex-start w-[30%] py-3 px-3">
         <h2 class="font-bold text-xl">
           {{quiz_name}}
         </h2>
         <p>Answers</p>
       </div>
-      <div class="flex flex-row gap-x-5 flex-wrap w-[90%]">
-        {% if quiz_questions %}
-        <div>
-          {% for question in quiz_questions %}
-          <div class="my-4">
-            <h4 class="font-bold">{{ forloop.counter }}.{{ question.text }}</h4>
-            {% for answer in question.get_question_answer %}
-            <div class="mx-7">
-              {% if answer.correct %}
-              <div class="flex flex-row gap-x-3 justify-between items-center">
-                <p>{{forloop.counter}} {{answer.text}}</p>
-                <div class="flex flex-row items-center mx-2">
-                  <div
-                    class="w-6 h-6 rounded-full items-center flex flex-col justify-center bg-green-500"
-                  >
-                    <i
-                      class="fa fa-check"
-                      aria-hidden="true"
-                      style="color: white;"
-                    ></i>
-                  </div>
-                  <p>Correct Answer</p>
-                </div>
-              </div>
-              {% else %}
-              <div class="py-2">{{forloop.counter}}.{{answer.text}}</div>
-              {% endif %}
-            </div>
-            {% endfor %}
-          </div>
-          {% endfor %}
-        </div>
-        {% else %}
-        <p>Sorry, Unknown Error, check your internet and Try again</p>
-        {% endif %}
-      </div>
+      
+        {% include "partial_answer.html" %}
+      
     </div>
+    <script>
+     $(document).ready(function(){
+    $("#menu").click(function(){
+        $("#menu_container").toggleClass("hidden");
+    });
+
+    const quiz_id = localStorage.getItem("exam_id");
+    const otp = localStorage.getItem("otp");
+    let ajaxCompleted = false; // Declare the variable only once
+
+    console.log(quiz_id);
+
+    if (!ajaxCompleted) {
+        $.ajax({
+            url: "/exam/get_all_answer",
+            type: "GET",
+            data: {
+                "quiz_id": quiz_id,
+                "otp": otp
+            },
+            success: function(data) {
+                console.log(data.html_content);
+                $("#answer").html(data.html_content);
+                $('.spinnerContainer').addClass('hidden');
+                ajaxCompleted = true; // Set the variable after the AJAX request completes
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
+});
+
+
+    </script>
     <script src="{% static 'Js/script.js' %}"></script>
   </body>
 </html>

@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-lt%&9@u1nr)vx158fepx$&13@lr+0+eqe#dyy9&r+3tpgi45o-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
-# DEBUG=False
+# DEBUG=True
 
 ALLOWED_HOSTS = ['*']
 
@@ -84,6 +84,13 @@ WSGI_APPLICATION = 'GorillaJobNet.wsgi.application'
 DATABASES = {
     'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'gorilla_job_net', # This is where you put the name of the db file. 
+#                  # If one doesn't exist, it will be created at migration time.
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

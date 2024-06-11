@@ -51,9 +51,11 @@ $(document).ready(function () {
 });
 $(document).ready(function (e) {
   $(".start-button").on("click", function () {
+    $(".spinnerOverlay").removeClass("hidden");
     const quizId = this.getAttribute("data-quiz-id");
     const quizName = this.getAttribute("data-quiz-name");
     const quizQuestions = this.getAttribute("data-quiz-questions");
+
     localStorage.setItem("exam_id", quizId);
     const otp = localStorage.getItem("otp");
     $.ajax({
@@ -64,6 +66,10 @@ $(document).ready(function (e) {
         let content;
         let header;
         let footer;
+        $(".spinnerOverlay").addClass("hidden");
+        if (data.question_number < 1) {
+          alert("This Exam has no Questions Available please Try other Exams");
+        }
         if (!data.paid) {
           header = `<form class='code_check flex flex-row items-center gap-x-2'>
           <input type="number" required name="code" class='bg-slate-200 rounded-md w-[100%] rounded-md py-2 px-2' placeholder='Enter Your Code' />
@@ -136,6 +142,7 @@ $(document).ready(function (e) {
         $(".modal-container").removeClass("hidden");
       },
       error: function (error) {
+        $(".spinnerOverlay").addClass("hidden");
         alert("error");
       },
     });
@@ -166,7 +173,7 @@ $(document).ready(function (e) {
             `<p class='text-[#10644D] font-bold text-xs'>Code Validated, you will be redirect to exam page in a seconds.....</p>`
           );
           setTimeout(() => {
-            window.location.href = "/exam/quiz/" + quizId;
+            window.location.href = "/exam/exam/" + quizId;
           }, 3000);
         } else {
           $("#modal-message").append(
@@ -191,6 +198,9 @@ $(document).ready(function (e) {
   //   // alert(exam_id);
   //   $(".payment-modal").removeClass("hidden");
   // });
+  $(document).on("click", ".cancel", function () {
+    $(".modal-container").addClass("hidden");
+  });
   $(document).on("click", ".Pay", function () {
     $(".modal-container").addClass("hidden");
     const exam_id = this.getAttribute("data-quiz-id");
@@ -250,19 +260,29 @@ $(document).ready(function (e) {
             $("#message_modal1").removeClass("hidden");
             $("#message_modal1").addClass("bg-red-400");
             $("#message_modal1").html(
-              `<p class="text-white">Payment Success </p>`
+              `<div class='min-h-screen w-full flex flex-col items-center justify-center absolute top-0' style='z-index-9999999;width:"400px"; background-color:rgba(0,0,0,0.8)'>
+              <div class='z-50 bg-white px-2 py-2 rounded-md' style='z-index:99999999'>
+              <p class='text-[#10644D] font-bold text-xs'>Congratulations,Payment Successfully Completed </p>
+              <p>Copy Your Entrance code to Safe Place </p>
+              <div class='flex flex-row gap-x-3 items-center'>
+              <input type="text" class='bg-white px-2 py-2 rounded-md' value=${data.otp} id="myInput">
+
+
+              <button id="copy_code" class='bg-[#10644D] rounded-md px-2 py-2' onclick="copyCode()">Copy Code</button>
+              <a href="/exam/exam/${exam_id}" class='text-white text-xs font-bold py-2 px-4 bg-[#10644D] rounded-md '>Explore the Exam</a>
+              </div>
+              </div>
+              </div>`
             );
-            setTimeout(() => {
-              window.location.href = "/exam/quiz/" + exam_id;
-            }, 5000);
+            // setTimeout(() => {
+            //   window.location.href = "/exam/exam/" + exam_id;
+            // }, 5000);
           } else if (data.status === "failed") {
             clearInterval(interval);
             $("#loader").addClass("hidden");
             $("#message_modal1").removeClass("hidden");
             $("#message_modal1").addClass("bg-red-400");
-            $("#message_modal1").html(
-              `<p class="text-white">Payment Failed  </p>`
-            );
+            $("#message_modal1").html(`Payment Failed Please try again`);
             setTimeout(() => {
               window.location.href = "/exam/";
             }, 5000);
@@ -343,36 +363,79 @@ $(document).ready(function () {
   });
 });
 $(document).ready(function () {
-  $(".question_answer").on("change", function () {
-    var questionId = $(this).attr("name");
-    var answerId = $(this).val();
+  let current_page = 1;
+  $("#quiz_container").on("submit", function (e) {
+    e.preventDefault();
+    form_value = $(this).serialize();
 
+    const answerId = $('input[name="question_radio"]:checked').val();
+    const questionId = $("#question_id").val();
+    const examId = localStorage.getItem("exam_id");
     const otp = localStorage.getItem("otp");
+
     $(".spinnerContainer").removeClass("hidden");
-    $.ajax({
-      url: "/exam/submit",
-      type: "POST",
-      data: {
-        answer_id: answerId,
-        question_id: questionId,
-        code: otp,
-        csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
-      },
-      success: function (data) {
-        if (data.status == "success") {
+    reloadCsrfToken(function (token) {
+      $.ajax({
+        url: "/exam/exam/" + examId,
+        type: "POST",
+        data: {
+          answer_id: answerId,
+          question_id: questionId,
+          code: otp,
+          question_number: current_page,
+          csrfmiddlewaretoken: token,
+        },
+        success: function (data) {
+          console.log(data);
+          if (data.status == "success") {
+            $(".spinnerContainer").addClass("hidden");
+
+            console.log(data.has_next == true);
+            // Update the question container with new question data
+            $("#quiz_container").html(data.html);
+            current_page++;
+          }
+          if (data.marks >= 0) {
+            $(".spinnerContainer").addClass("hidden");
+            console.log(data.marks);
+            $("#results").append(`<div>
+            <p class='my-2 font-bold'>Here Is Your Marks</p>
+            <div class="rounded-full w-32 h-32 flex flex-col items-center justify-center bg-slate-400">
+            ${data.marks}%
+            </div>
+            <a href='/exam/get_all_answer' class='bg-[#10644D] px-4 py-2 rounded-md'> Check The Answers</a>
+            </div>`);
+            $("#quiz_container").addClass("hidden");
+            $("#results").removeClass("hidden");
+          }
+          if (data.reject_message) {
+            $(".spinnerContainer").addClass("hidden");
+            $("#quiz_container").addClass("hidden");
+            $("#results").append(`<div>
+           
+            <div class=" flex flex-col items-center justify-center bg-slate-400 px-4 rounded-md">
+            <p class='text-orange-200'>${data.reject_message}</p>
+            </div>
+            </div>`);
+            $("#results").removeClass("hidden");
+          }
+        },
+        error: function (e) {
+          alert(e);
           $(".spinnerContainer").addClass("hidden");
-          // $("#next_previous").removeClass("hidden");
-          // $("#submit_question").addClass("hidden");
-          // console.log(data);
-        }
-      },
-      error: function (e) {
-        alert(e);
-        $(".spinnerContainer").addClass("hidden");
-      },
+        },
+      });
     });
   });
+
+  function reloadCsrfToken(callback) {
+    $.get("/exam/csrf_token/", function (data) {
+      // Call the callback function with the new token value
+      callback(data.token);
+    });
+  }
 });
+
 // function SubmitAnswer(question_id, answer_id) {
 //   $("#submit_question").on("click", function (e) {
 //     e.preventDefault();
