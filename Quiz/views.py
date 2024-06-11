@@ -94,49 +94,73 @@ def QuizQuestions(request,pk):
                     otp=OTP.objects.get(otp=code)
                     ten_minutes_ago = timezone.now() - timezone.timedelta(minutes=10)
                     if request.user.is_authenticated:
-                        user_done_question=UserSubmission.objects.get(code=otp,user=user,question=question_id,created_on__gte=ten_minutes_ago)
+                        user_done_question=UserSubmission.objects.get(code=otp,user=user,question=question_id)
                         user_done_question.user_response=answer
                         user_done_question.correct=correct
-                        user_done_question.save()
-                    else:
-                        user_done_question=UserSubmission.objects.get(code=otp,question=question_id,created_on__gte=ten_minutes_ago)    
-                        user_done_question.user_response=answer
-                        user_done_question.correct=correct
-                        user_done_question.save()
-                    
-                    if int(question_number)+1 >len(questions):
-                        return GetAnswer(quiz.id,code)
-                        # print(answer)
-                        
-                    elif len(questions)== int(question_number) +1:
-                         has_next=False
-                         html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
-                         response={
+                        answer_saved=user_done_question.save()
+                        print("answer saved Authenticated",answer_saved)
+                        if len(questions) == int(question_number)+1:
+                            has_next=False
+                            html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
+                            response={
                              'has_next':has_next,
                              'status':'success',
                              'html':html
-                         }
-                    else:
-                        has_next=True 
-                        html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)+1],'has_next':has_next})
-                        response={
+                                }
+                            return JsonResponse(response)
+                        elif int(question_number)+1 >len(questions):
+                                return GetAnswer(quiz.id,code)    
+                        else:
+                            has_next=True 
+                            html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
+                            response={
                             'html': html,
                             'has_next': has_next,
                             'status':'success'
-                        }
-                    return JsonResponse(response)            
+                            }
+                            return JsonResponse(response)
+                        
+                    else:
+                        user_done_question=UserSubmission.objects.get(code=otp,question=question_id)    
+                        user_done_question.user_response=answer
+                        user_done_question.correct=correct
+                        answer_saved=user_done_question.save()
+                        print("answer saved not authenicated",answer_saved)
+                        if len(questions) ==int(question_number):
+                            has_next=False
+                            html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
+                            response={
+                             'has_next':has_next,
+                             'status':'success',
+                             'html':html
+                                }
+                            return JsonResponse(response)
+                        elif int(question_number) >len(questions):
+                                return GetAnswer(quiz.id,code)    
+                        else:
+                            has_next=True 
+                            html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
+                            response={
+                            'html': html,
+                            'has_next': has_next,
+                            'status':'success'
+                            }
+                            return JsonResponse(response)
                     
-                    # return JsonResponse({"status": "success"}, status=200)
+                    
+                      
                     
                 except UserSubmission.DoesNotExist:            
                     if request.user.is_authenticated:
-                        UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,user=user,code=otp,correct=correct)
-                        if int(question_number)+1 >len(questions):
+                        submitted=UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,user=user,code=otp,correct=correct)
+                        print("not exist authenticated",submitted)
+                        if int(question_number)+1 > len(questions):
                             return GetAnswer(quiz.id,code)
                             
                             
-                        elif len(questions)==int(question_number) + 1:
+                        elif len(questions)==int(question_number) :
                             has_next=False
+                            # UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,user=user,code=otp,correct=correct) 
                             html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
                             response={
                              'has_next':has_next,
@@ -144,17 +168,19 @@ def QuizQuestions(request,pk):
                              'html':html
                             }
                         else:
-                             html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)+1],'has_next':has_next})
+                             
+                             html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
                              has_next=True
                              response={
                             'html': html,
                             'has_next': has_next,
                             'status':'success'
                             }   
+                        # UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=otp,correct=correct)      
                         return  JsonResponse(response) 
                     else:
-                        UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=otp,correct=correct)    
-
+                        submitted=UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=otp,correct=correct)    
+                        print("not exist not authenticated",submitted)
                         if int(question_number)+1 >len(questions):
                             return GetAnswer(quiz.id,code)
                             
@@ -172,6 +198,7 @@ def QuizQuestions(request,pk):
                             'has_next': has_next,
                             'status':'success'
                             }   
+                        # UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=otp,correct=correct)      
                         return  JsonResponse(response) 
                    
             except Answer.DoesNotExist:
@@ -187,51 +214,7 @@ def SearchDepartent(request):
     context={"results":results}
     return render(request,'search.html',context) 
 # @login_required(login_url='/account/')
-def SubmitUserResponse(request):
-    if request.method == 'POST':
-        pass
-        # question_id = request.POST.get('question_id')
-        # user_response = request.POST.get('answer_id')
-        # code=request.POST.get('code')
-        # user=request.user
-        
-        # try:
-        #     question=Question.objects.get(id=question_id)
-        
-        #     quiz=question.quiz
-        #     answer=Answer.objects.get(id=user_response)
-        #     if not answer:
-        #         return JsonResponse({"status": "error"}, status=200)
-        #     if answer and answer.correct:
-        #         correct=True
-        #     else:
-        #         correct=False
-        #     try:
-        #         code=OTP.objects.get(otp=code)
-        #         ten_minutes_ago = timezone.now() - timezone.timedelta(minutes=10)
-        #         if request.user.is_authenticated:
-        #             user_done_question=UserSubmission.objects.get(code=code,user=user,question=question_id,created_on__gte=ten_minutes_ago)
-        #         else:
-        #             user_done_question=UserSubmission.objects.get(code=code,question=question_id,created_on__gte=ten_minutes_ago)    
-        #         user_done_question.user_response=answer
-        #         user_done_question.correct=correct
-        #         user_done_question.save()
-        #         return JsonResponse({"status": "success"}, status=200)
-                
-        #     except UserSubmission.DoesNotExist:            
-        #         if request.user.is_authenticated:
-        #             user_answer=UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,user=user,code=code,correct=correct)
-        #         else:
-        #             user_answer=UserSubmission.objects.create(user_response=answer,quiz=quiz, question=question,code=code,correct=correct)    
 
-        #         if user_answer:
-        #             return JsonResponse({"status": "success"}, status=200)
-        #         else:
-        #             print(user_answer)
-        #             return JsonResponse({"status": "error to create"}, status=400)
-        # except Answer.DoesNotExist:
-        #     return JsonResponse({"status": "choose one please"}, status=200)        
-# @login_required(login_url='/account/')
 def GetAnswer(id,otp):
    
     # user_id = request.user.id
@@ -305,6 +288,5 @@ def get_csrf_token(request):
     
     # Return the CSRF token in a JSON response
     return JsonResponse({'token': csrf_token})
-          
 
 

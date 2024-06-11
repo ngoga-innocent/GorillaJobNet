@@ -198,7 +198,7 @@ function getQuestions() {
                 <h2 class="font-bold">${question.text}</h2>
                 ${optionsHtml}
 
-                <button type="button" class="delete_question_btn" data-quiz-id="${question.id}">Delete</button>
+                <button type="button" class="delete_question_btn" data-question-id="${question.id}">Delete</button>
               </div>
               
             `);
@@ -212,11 +212,11 @@ function getQuestions() {
 }
 $(document).on("click", ".delete_question_btn", function (e) {
   e.preventDefault();
-  const quizId = $(this).data("quiz-id");
-  // console.log("quizId");
+  const quizId = $(this).data("question-id");
+  console.log(quizId);
   $.ajax({
-    url: "/staff/delete_question",
-    method: "POST",
+    url: "/staff/add_questions",
+    method: "GET",
     data: { quiz_id: quizId },
     success: function (data) {
       // console.log(data);

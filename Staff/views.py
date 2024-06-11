@@ -55,7 +55,7 @@ class Faculity(View):
           faculities=Faculties.objects.all()
           return render(request,'faculities.html',{'faculities':faculities})
     def post(self,request):
-          print(request.POST)
+        #   print(request.POST)
           name=request.POST.get('name')
           faculity=Faculties.objects.create(name=name)
           if faculity:
@@ -74,7 +74,16 @@ class Faculity(View):
           
              
 def DeleteQuestion(request):
-        pass
+        quiz_id=request.GET.get('quiz-id')
+        print("Quiz id to be deleted",quiz_id)
+        try:
+             quiz=Quiz.objects.get(id=quiz_id)
+             quiz.delete()
+             return JsonResponse({"status":True})
+        except Quiz.DoesNotExist:
+             return JsonResponse({'status': 'error', 'message': 'Exam does not exist'}, status=200)     
+     
+        
 def DeleteFaculity(request):
         try:
             
@@ -106,7 +115,10 @@ class QuestionView(View):
         # return JsonResponse({'status': 'saved form'},status=200)
    
     def get(self,request):
-        return render(request,'add_question.html')        
+        return render(request,'add_question.html') 
+    def delete(self,request):
+         quiz_id=request.GET.get('quiz_id')
+         return JsonResponse({'status': 'good'})       
         
         
 def get_All_faculty(request):
