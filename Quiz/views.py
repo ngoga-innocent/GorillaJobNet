@@ -112,7 +112,7 @@ def QuizQuestions(request,pk):
                                 return GetAnswer(quiz.id,code)    
                         else:
                             has_next=True 
-                            html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next})
+                            html = render_to_string('quiz_question_partial.html', {'question': questions[int(question_number)],'has_next':has_next,'page_numner':question_number})
                             response={
                             'html': html,
                             'has_next': has_next,

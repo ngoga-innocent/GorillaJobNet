@@ -186,8 +186,10 @@ function getQuestions() {
     success: function (data) {
       const questions = data.questions;
       if (questions.length > 0) {
+        let number = 1;
         questions.forEach((question) => {
           let optionsHtml = "";
+
           question.options.forEach((option) => {
             optionsHtml += `<div class="mx-4">
                 ${option.text} ${option.correct ? "(Correct)" : ""}
@@ -195,13 +197,14 @@ function getQuestions() {
           });
           $("#quiz_question_container").append(`
               <div class="gap-1">
-                <h2 class="font-bold">${question.text}</h2>
+                <h2 class="font-bold">${number}. ${question.text}</h2>
                 ${optionsHtml}
 
                 <button type="button" class="delete_question_btn" data-question-id="${question.id}">Delete</button>
               </div>
               
             `);
+          number++;
         });
       }
     },
