@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 html,body {
     font-family: Arial, sans-serif;
     font-size: 16px;
@@ -254,7 +257,10 @@ input:focus {
 
   animation: spin .5s linear infinite; /* Apply animation */
 }
-
+/* #post_div{
+    background: linear-gradient(171deg, rgba(188,190,197,1) 61%, rgba(198,206,200,1) 95%);
+    border-radius: 0 0 0 4%;
+} */
 @keyframes spin {
   0% { transform: rotate(0deg); } /* Start at 0 degrees */
   100% { transform: rotate(360deg); } /* End at 360 degrees (full circle) */
@@ -309,3 +315,27 @@ input:focus {
     background-repeat: no-repeat;
     background-size: cover;
 }
+.scrollbar-hidden {
+  /* Hide scrollbar for Chrome, Safari, and Edge */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  /* For smooth scrolling */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+   
+        

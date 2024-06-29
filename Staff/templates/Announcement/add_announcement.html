@@ -1,0 +1,103 @@
+{% extends 'staff_base.html' %} {% block content %}
+
+<div
+  id=""
+  class="transition-all duration-5000 ease-in-out flex-1 flex-col w-full z-20 items-center justify-center"
+>
+  <div
+    class="container mx-auto bg-white transition ease-in-out items-center w-[95%] flex flex-col"
+    style="border-radius: 20px;"
+  >
+    <div>
+      <h2 class="text-2xl font-bold">Post Announcement</h2>
+    </div>
+    <form
+      method="post"
+      action="{% url 'staff_add_announcement' %}"
+      enctype="multipart/form-data"
+      class="py-4 h-[90%]"
+    >
+      {% csrf_token %}
+      <div>
+        <label for="id_category" class="block text-sm font-medium text-black"
+          >Category</label
+        >
+        {{ form.category }}
+      </div>
+      <div>
+        <label for="id_title" class="block text-sm font-medium text-black"
+          >Title</label
+        >
+        {{ form.title }}
+      </div>
+      <div>
+        <label for="id_slug" class="block text-sm font-medium text-black"
+          >Slug</label
+        >
+        {{ form.slug }}
+      </div>
+      <div>
+        <label for="id_thumbnail" class="block text-sm font-medium text-black"
+          >Thumbnail</label
+        >
+        {{ form.thumbnail }}
+      </div>
+      <div>
+        <label for="id_description" class="block text-sm font-medium text-black"
+          >Description</label
+        >
+        {{ form.media }} {{ form.description }}
+      </div>
+      <div>
+        <label
+          for="id_application_link"
+          class="block text-sm font-medium text-black"
+          >Application Link</label
+        >
+        {{ form.application_link }}
+      </div>
+      <div>
+        <label for="id_announcer" class="block text-sm font-medium text-black"
+          >Deadline</label
+        >
+        {{ form.deadline }}
+      </div>
+      <div>
+        <label for="id_announcer" class="block text-sm font-medium text-black"
+          >Required Experience</label
+        >
+        {{ form.experience }}
+      </div>
+      <div>
+        <label for="id_announcer" class="block text-sm font-medium text-black"
+          >Company Name</label
+        >
+        {{ form.company_name }}
+      </div>
+      <div>
+        <label
+          for="id_announcer_description"
+          class="block text-sm font-medium text-black"
+          >Announcer Description</label
+        >
+        {{ form.announcer_description }}
+      </div>
+      <div>
+        <label
+          for="id_announcer_logo"
+          class="block text-sm font-medium text-black"
+          >Announcer Logo</label
+        >
+        {{ form.announcer_logo }}
+      </div>
+      <button
+        class="py-2 px-4 bg-[#10644D] text-white font-bold my-2 rounded-md"
+        type="submit"
+        class="btn btn-primary"
+      >
+        Save
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock content %}

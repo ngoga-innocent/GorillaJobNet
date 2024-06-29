@@ -1,0 +1,196 @@
+{% extends 'base.html' %} {% load static %} {% block title %} Gorilla Job Net
+E-SOKO {% endblock title %} {% block content %}
+<div class="flex flex-col items-center md:flex-row gap-x-3 px-4">
+  <div
+    class="md:min-h-screen w-[100%] gap-x-2 md:w-[20%] flex-1 bg-slate-100 rounded-lg px-2 py-2 max-h-screen overflow-y-scroll flex md:flex-col scrollbar-hidden"
+  >
+    {% for category in product_categories %}
+    <a
+      href="{% url 'category_products' category.id %}"
+      class="py-2 bg-slate-300 my-1 px-2 rounded-md flex hover:bg-slate-200 flex-row gap-x-2 justify-between"
+    >
+      <p>{{category.name}}</p>
+      <div
+        class="rounded-full flex-col md:items-center md:justify-center bg-orange-400 md:bg-inherit p-1"
+      >
+        <p class="text-white font-bold self-center">
+          {{category.get_category_products.count}}
+        </p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% if category_products %}
+  <div
+    class="w-[100%] md:w-[80%] max-h-screen overflow-y-scroll scrollbar-hidden grid grid-cols-4 gap-2"
+  >
+    {% for product in category_products %}
+    <a
+      href="{% url 'single_product' product.id %}"
+      class="rounded-lg overflow-hidden flex-shrink-0 mx-1 border h-32 px-4 py-2 relative"
+      style="background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
+    >
+      <div
+        class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+      >
+        <p class="text-white">{{product.name}}</p>
+      </div>
+      {% if product.price %}
+      <div
+        class="absolute top-0 lef-1 z-10 bg-orange-400 text-white font-bold px-4 py-2 rounded-tr-xl rounded-bl-xl"
+      >
+        {{product.price}}
+      </div>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="w-[80%] max-h-screen overflow-y-scroll scrollbar-hidden">
+    <div class="relative w-full h-[40%] justify-center">
+      <button
+        class="absolute left-0 top-1/2 z-10 h-14 w-14 rounded-full px-4 bg-white bg-opacity-50 hover:bg-opacity-75"
+        onclick="Left()"
+      >
+        &lt;
+      </button>
+
+      <!-- Right Arrow -->
+      <button
+        class="absolute right-0 z-10 h-14 w-14 top-1/2 rounded-full self-center px-4 bg-white bg-opacity-50 hover:bg-opacity-75"
+        onclick="scrollRight()"
+      >
+        &gt;
+      </button>
+      <div id="carousel" class="flex flex-row gap-x-2 overflow-hidden h-[100%]">
+        {% for product in products %}
+        <a
+          href="{% url 'single_product' product.id %}"
+          class="w-[90%] md:w-[70%] overflow-hidden rounded-md gap-x-2 no-scrollbar scroll-smooth h-[100%] flex-shrink-0"
+        >
+          <img
+            src="{{product.thumbnail.url}}"
+            alt=""
+            class="w-full h-full object-cover"
+          />
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    <div
+      style="max-width: max-content;"
+      class="self-center text-white bg-[#10644D] py-2 px-4 text-xl rounded-tl-2xl rounded-br-2xl my-2 flex-1"
+    >
+      All Categories Products
+    </div>
+    {% if product_categories %} {% for category in product_categories %}
+
+    <div class="my-2">
+      {% if category.get_category_products %}
+      <p class="text-lg font-bold">{{category.name}}</p>
+      <div class="flex flex-row overflow-x-auto gap-x-2">
+        {% for product in category.get_category_products %}
+        <a
+          href="{% url 'single_product' product.id %}"
+          class="rounded-lg overflow-hidden flex-shrink-0 w-3/4 md:w-1/5 mx-1 border h-32 px-4 py-2 relative"
+          style="background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
+        >
+          <div
+            class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+          >
+            <p class="text-white">{{product.name}}</p>
+          </div>
+          {% if product.price %}
+          <div
+            class="absolute top-0 lef-1 z-10 bg-orange-400 text-white font-bold px-4 py-2 rounded-tr-xl rounded-bl-xl"
+          >
+            {{product.price}}
+          </div>
+          {% endif %}
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %} {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="hidden">
+    <form
+      method="post"
+      action="{% url 'esoko' %}"
+      enctype="multipart/form-data"
+      class="py-4 h-[90%] hidden"
+    >
+      {% csrf_token %}
+      <div>
+        <label for="id_category" class="block text-sm font-medium text-black"
+          >Category</label
+        >
+        {{ form.category }}
+      </div>
+      <div>
+        <label for="id_title" class="block text-sm font-medium text-black"
+          >Title</label
+        >
+        {{ form.name }}
+      </div>
+      <div>
+        <label for="id_slug" class="block text-sm font-medium text-black"
+          >Slug</label
+        >
+        {{ form.slug }}
+      </div>
+      <div>
+        <label for="id_thumbnail" class="block text-sm font-medium text-black"
+          >Thumbnail</label
+        >
+        {{ form.thumbnail }}
+      </div>
+      <div>
+        <label for="id_description" class="block text-sm font-medium text-black"
+          >Description</label
+        >
+        {{ form.media }} {{ form.description }}
+      </div>
+      <div>
+        <label
+          for="id_application_link"
+          class="block text-sm font-medium text-black"
+          >Contact
+        </label>
+        {{ form.contact }}
+      </div>
+      <div>
+        <label for="id_announcer" class="block text-sm font-medium text-black"
+          >Location of Product</label
+        >
+        {{ form.location }}
+      </div>
+
+      <button
+        class="py-2 px-4 bg-[#10644D] text-white font-bold my-2 rounded-md"
+        type="submit"
+        class="btn btn-primary"
+      >
+        Save
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock content %} {% block script %}
+<script src="{% static 'Js/esoko.js' %}"></script>
+<br />
+<script>
+  function Left() {
+    const container = document.getElementById("carousel");
+    container.scrollBy({ left: -container.clientWidth, behavior: "smooth" });
+  }
+
+  function scrollRight() {
+    const container = document.getElementById("carousel");
+    container.scrollBy({ left: container.clientWidth, behavior: "smooth" });
+  }
+</script>
+{% endblock script %}

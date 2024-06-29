@@ -1,2 +1,35 @@
 {% extends 'staff_base.html' %} <br />
-{% block Heading %} Dashboard {% endblock Heading %}
+{% block Heading %} Dashboard {% endblock Heading %} {% block content %}
+<div class="dashboard grid grid-cols-4 gap-x-3">
+  <a
+    href="#"
+    class="card flex flex-col items-center justify-center rounded-lg py-4 transition-all ease-in-out duration-500 bg-slate-100 hover:bg-[#10644D] hover:text-white"
+  >
+    <h3 class="font-bold">Total Exams</h3>
+    <p>{{ exams }}</p>
+  </a>
+
+  <a
+    href="#"
+    class="card flex flex-col items-center justify-center rounded-lg py-4 transition-all ease-in-out duration-500 bg-slate-100 hover:bg-[#10644D] hover:text-white"
+  >
+    <h3 class="font-bold">Total products</h3>
+    <p>{{ product }}</p>
+  </a>
+
+  <a
+    href="#"
+    class="card flex flex-col items-center justify-center rounded-lg py- transition-all ease-in-out duration-5004 bg-slate-100 hover:bg-[#10644D] hover:text-white"
+  >
+    <h3 class="font-bold">Total Announcements</h3>
+    <p>{{ announcement }}</p>
+  </a>
+  <a
+    href="#"
+    class="card flex flex-col items-center justify-center rounded-lg py- transition-all ease-in-out duration-5004 bg-slate-100 hover:bg-[#10644D] hover:text-white"
+  >
+    <h3 class="font-bold">Total Users</h3>
+    <p>{{ users }}</p>
+  </a>
+</div>
+{% endblock content %}

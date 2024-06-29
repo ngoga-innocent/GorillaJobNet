@@ -36,6 +36,24 @@ def Authenticate():
 
     response = requests.request("POST", url, headers=headers, data=payload)
     return response
+def make_payment_function( amount, phone, access_token):
+        
+        url = f"{base_url}/transactions/cashin"
+        payload =json.dumps({
+            "amount": amount,
+            "number":phone
+        })
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': f'Bearer {access_token}',
+            "X-Webhook-Mode":"development"
+        }
+        # url="https://payments.paypack.rw/api/transactions/cashin"
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        return response
+
 class PaymentView(View):
 
     @method_decorator(csrf_exempt)

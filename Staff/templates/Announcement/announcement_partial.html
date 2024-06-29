@@ -1,0 +1,17 @@
+{% load static %} {% if announcements %}
+<div>
+  {% for announcement in announcements %}
+  <div
+    class="my-2 bg-white px-2 py-2 max-w-screen rounded-lg hover:bg-slate-400 ease-in-out duration-700 flex flex-wrap w-auto overflow-x-hidden"
+  >
+  <a href="{% url 'staff_announcement_detail' announcement.id %}">
+    <h2 class="font-bold">{{ announcement.title }}</h2>
+    <p class="font-bold text-sm ">Posted by: <p class="text-[#10644D] font-bold">{{announcement.company_name}}</p></p>
+    <p class="w-[90%]">{{ announcement.slug }}</p>
+
+    <p>Posted on: {{ announcement.created_at }}</p>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,285 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<div
+  class="bg-[#10644d] py-12 w-full flex flex-col items-center justify-center"
+>
+  <h1 class="text-white font-bold text-center md:text-xl">
+    WELCOME TO GORILLA JOB NET ANNOUNCEMENTS
+  </h1>
+  <form
+    id="search_announcement_form"
+    class="flex flex-row items-center justify-center self-center w-full gap-x-3 my-2"
+  >
+    <input
+      type="text"
+      class="rounded-md w-[40%] py-2 px-2 bg-white"
+      placeholder="Search for announcement"
+      id="search_announcement"
+    />
+    <button
+      type="submit"
+      class="py-2 px-2 bg-white rounded-md text-[#10644D] hover:bg-blue-400 transition-all hover:text-white duration-700 font-bold"
+    >
+      Search
+    </button>
+  </form>
+</div>
+<div
+  class="flex flex-col md:flex-row gap-x-1 max-h-screen overflow-y-scroll scrollbar-hidden"
+>
+  <div
+    class="flex flex-col w-[82%] max-h-screen overflow-y-scroll relative py-3 scrollbar-hidden"
+  >
+    <div class="flex flex-row flex-wrap gap-x-2 px-2">
+      {% if ann_categories %} {% for category in ann_categories %}
+      <button
+        data-id="{{category.id}}"
+        class="category_button flex-1 flex flex-row items-center gap-x-2 hover:bg-[#10644d] hover:text-white py-2 px-2 rounded-md transition-all ease-in-out duration-1000"
+      >
+        <div class="">{{category.name}}</div>
+        <div class="bg-orange-400 px-3 rounded-full">
+          {{category.get_category_annoucement.count}}
+        </div>
+      </button>
+      {% endfor %} {% endif %}
+    </div>
+    <div class="bg-[#10644D] rounded-md md:hidden self-center my-2">
+      <div class="flex flex-row justify-between px-3 items-center gap-x-4">
+        <h2 class="py-2 font-bold text-white">
+          Add Announcement
+        </h2>
+        <button
+          id="post_announcements_modal_button"
+          class="rounded-full bg-white w-7 h-7 border"
+        >
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+    </div>
+    <div class="my-2" id="announcements-container">
+      {% include "announcement_partial.html" %}
+    </div>
+  </div>
+  <div
+    id="post_div"
+    class="hidden md:flex flex-col items-center max-h-screen overflow-y-scroll rounded-3xl scrollbar-hidden flex-1 relative"
+  >
+    <div
+      class="z-20 items-center justify-center rounded-md pt-3 w-[100%] px-4 flex flex-col"
+    >
+      <div class="bg-[#10644D] rounded-md">
+        <div class="flex flex-row justify-between px-3 items-center gap-x-4">
+          <h2 class="py-2 font-bold text-white">
+            Add Announcement
+          </h2>
+          <button
+            id="post_announcements_modal_button"
+            class="rounded-full bg-white w-7 h-7 border"
+          >
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-row flex-wrap gap-x-2 py-3 px-7"></div>
+    </div>
+  </div>
+</div>
+<div
+  id="announcement_spinner"
+  class="hidden announcement_spinner transition-all duration-5000 py-3 px-6 ease-in-out absolute top-0 h-[100%] flex-col w-[100%] z-20 flex-center items-center justify-center"
+  style="
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+  "
+>
+  <div
+    class="absolute w-7 h-7 rounded-full border-2 self-center border-dashed border-[#10644d] animate-spin"
+  ></div>
+</div>
+<div
+  id="post_announcement_modal"
+  class="hidden post_announcement_modal transition-all duration-5000 ease-in-out absolute top-0 h-[100%] flex-col w-full z-20 items-center justify-center"
+  style="background-color: rgba(0, 0, 0, 0.8);"
+>
+  <div
+    class="container mx-auto bg-white transition ease-in-out items-center w-[95%] flex flex-col"
+    style="border-radius: 20px;"
+  >
+    <div
+      class="flex flex-row justify-center gap-x-10 my-2 shadow-sm shadow-black py-2 items-center w-[100%]"
+    >
+      <h2 class="text-2xl font-bold">Post Announcement</h2>
+      <button
+        id="close_post_announcemnt_modal"
+        class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg self-end"
+      >
+        Close
+      </button>
+    </div>
+    <form
+      id="announcementForm"
+      method="post"
+      action="{% url 'announcements' %}"
+      enctype="multipart/form-data"
+      class="py-4 h-[90%]"
+    >
+      {% csrf_token %}
+      <div>
+        <label for="id_category" class="block text-sm font-medium text-black"
+          >Category</label
+        >
+        {{ form.category }}
+      </div>
+      <div>
+        <label for="id_title" class="block text-sm font-medium text-black"
+          >Title</label
+        >
+        {{ form.title }}
+      </div>
+      <div>
+        <label for="id_slug" class="block text-sm font-medium text-black"
+          >Slug</label
+        >
+        {{ form.slug }}
+      </div>
+      <div>
+        <label for="id_thumbnail" class="block text-sm font-medium text-black"
+          >Thumbnail</label
+        >
+        {{ form.thumbnail }}
+      </div>
+      <div>
+        <label for="id_description" class="block text-sm font-medium text-black"
+          >Description</label
+        >
+        {{ form.media }} {{ form.description }}
+      </div>
+      <div>
+        <label
+          for="id_application_link"
+          class="block text-sm font-medium text-black"
+          >Application Link</label
+        >
+        {{ form.application_link }}
+      </div>
+      <div>
+        <label for="id_announcer" class="block text-sm font-medium text-black"
+          >Deadline</label
+        >
+        {{ form.deadline }}
+      </div>
+      <div>
+        <label for="id_announcer" class="block text-sm font-medium text-black"
+          >Required Experience</label
+        >
+        {{ form.experience }}
+      </div>
+      <div>
+        <label for="id_announcer" class="block text-sm font-medium text-black"
+          >Company Name</label
+        >
+        {{ form.company_name }}
+      </div>
+      <div>
+        <label
+          for="id_announcer_description"
+          class="block text-sm font-medium text-black"
+          >Announcer Description</label
+        >
+        {{ form.announcer_description }}
+      </div>
+      <div>
+        <label
+          for="id_announcer_logo"
+          class="block text-sm font-medium text-black"
+          >Announcer Logo</label
+        >
+        {{ form.announcer_logo }}
+      </div>
+      <button
+        class="py-2 px-4 bg-[#10644D] text-white font-bold my-2 rounded-md"
+        type="submit"
+        class="btn btn-primary"
+      >
+        Save
+      </button>
+    </form>
+  </div>
+</div>
+<div
+  id="announcement_pay_modal"
+  class="hidden absolute top-0 w-full h-full z-20 items-center flex-col py-2"
+  style="background-color: rgba(0, 0, 0, 0.8);"
+>
+  <div
+    class="bg-white my-2 w-[50%] py-4 px-3 mx-auto rounded-lg lfex-col justify-center items-center"
+  >
+    <form
+      id="check_otp_announcement"
+      class="flex flex-row shadow-sm shadow-black rounded-md py-2 gap-x-3 px-3"
+    >
+      {% csrf_token %}
+      <input
+        type="text"
+        class="w-[60%] py-2 px-4 rounded-lg bg-slate-300"
+        placeholder="Enter Your Otp To continue"
+        name="otp"
+      />
+      <button
+        class="bg-[#10644D] text-white font-bold px-3 py-2 rounded-md"
+        type="submit"
+      >
+        Check OTP
+      </button>
+      <div id="message_box"></div>
+    </form>
+    <h2 class="my-2 font-bold text-[#10644D]">Get New Otp</h2>
+    <form id="announcement_payment_form">
+      {% csrf_token %}
+      <input
+        type="text"
+        class="w-[90%] py-2 px-3 rounded-md bg-slate-200"
+        placeholder="Enter Your Name"
+        name="name"
+      />
+      <input
+        type="number"
+        class="w-[90%] my-1 py-2 px-3 rounded-md bg-slate-200"
+        placeholder="Enter Your Age"
+        name="age"
+      />
+      <input
+        type="number"
+        class="w-[90%] py-2 px-3 rounded-md bg-slate-200"
+        placeholder="Enter Phone number"
+        name="phone"
+      />
+      <div class="flex flex-row gap-x-3 my-2">
+        <button
+          type="submit"
+          id="pay_ann_pay_modal"
+          class="py-2 px-4 rounded-md bg-[#10644d] text-white font-bold"
+        >
+          Pay Now
+        </button>
+        <button
+          id="cancel_ann_pay_modal"
+          class="py-2 px-4 rounded-md bg-[#e17832] text-white font-bold"
+        >
+          Cancel Payment
+        </button>
+        <div
+          id="pay_spinner"
+          class="hidden w-7 h-7 rounded-full border-2 border-dashed border-[#10644D] animate-spin"
+        ></div>
+        <div id="otp_box"></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %} {% block script %}
+<script src="{% static 'Js/announcements.js' %}"></script>
+<br />
+
+{% endblock script %}

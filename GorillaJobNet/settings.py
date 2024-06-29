@@ -2,6 +2,10 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
+import cloudinary_storage
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 load_dotenv()
 
@@ -15,14 +19,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-lt%&9@u1nr)vx158fepx$&13@lr+0+eqe#dyy9&r+3tpgi45o-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG') == 'True'
-# DEBUG=True
+# DEBUG = os.getenv('DEBUG') == 'True'
+DEBUG=False
 
-ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -30,12 +34,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
+    #Custom Apps
+    'Announcement',
     'Home',
     'Login',
     'Quiz',
     'Payment',
     'Staff',
-    'django_truncate'
+    'ESOKO',
+    'django_truncate',
+    'ckeditor',
+    
+    
+
 ]
 
 MIDDLEWARE = [
@@ -47,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 STORAGES = {
@@ -81,16 +95,16 @@ WSGI_APPLICATION = 'GorillaJobNet.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
-}
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': 'gorilla_job_net', # This is where you put the name of the db file. 
-#                  # If one doesn't exist, it will be created at migration time.
-#     }
+#     'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'gorilla_job_net', # This is where you put the name of the db file. 
+                 # If one doesn't exist, it will be created at migration time.
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -138,7 +152,19 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_URL='/account'
+LOGIN_REDIRECT_URL='/account'
+# CLOUDINARY sETTING
+CLOUDINARY_STORAGE={
+    'CLOUD_NAME':'dlbdsv95f',
+    'API_KEY':'226668397868968',
+    "API_SECRET":'lTcafDxVVVnGLSpDcxqDJRt8S2E'
+}
 
+# DEFAULT_FILE_STORAGE='cloudinary_storage.storage.MediaCloudinaryStorage'
+ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ('127.0.0.1','localhost:8000')
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Logging
 # LOGGING = {
 #     'version': 1,
@@ -147,7 +173,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #         'file': {
 #             'level': 'DEBUG',
 #             'class': 'logging.FileHandler',
-#             'filename': './logfile1.log',
+#             'filename': './logfile_new1.log',
 #         },
 #     },
 #     'loggers': {

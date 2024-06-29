@@ -1,7 +1,9 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GorillaJobNet-Staff</title>
@@ -11,9 +13,9 @@
       sizes="32x32"
       href="{% static 'images/favicon.ico' %}"
     />
-    <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
+    <link rel="stylesheet" href="{% if debug %}{% static 'Css/tailwind.css' %} {% else %} {% static 'Css/style.min.css' %}{% endif %}">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
@@ -24,7 +26,9 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+     <script src="{% static 'Js/jquery.js' %}"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       .sidebar {
         transition: all 0.3s ease-in-out;
@@ -51,7 +55,7 @@
     </style>
   </head>
   <body class="bg-[#e1ecea]">
-    <div class="hidden absolute overlay-spinner min-h-screen w-full z-50 flex flex-col items-center justify-center">
+    <div class="hidden absolute overlay-spinner min-h-screen w-full z-50  flex-col items-center justify-center">
       <div class="w-14 h-14 rounded-full animate-spin border-2 border-white justify-center border-dashed"></div>
     </div>
     <div class="flex  flex-row gap-x-3">
@@ -78,24 +82,79 @@
                 >Dashboard</a
               >
             </li>
-            <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+
+            <li class="">
+              <button id="exam_button" class=" my-1 flex w-[100%] flex-shrink-0 items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+                <li class="">Exam</li>
+              </button>
+              <ul id="exam_container" class="exam_container flex-col gap-y-2 hidden transition-all ease-in-out duration-500 mx-3">
+                <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 my-1 rounded-md bg-slate-100">
               
-              <i class="fa-solid fa-f" style="color:#434544;font-size: small;"></i>
-              <a href="{% url 'faculity' %}" class=" text-sm"
-                >Subject</a
-              >
+                  <i class="fa-solid fa-f" style="color:#434544;font-size: small;"></i>
+                  <a href="{% url 'faculity' %}" class=" text-sm"
+                    >Subject</a
+                  >
+                </li>
+                <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100 mb-1">
+                  <i class="fa-solid fa-check-to-slot" style="color:#434544;font-size: small;"></i>
+                  <a href="{% url 'add_exam' %}" class=" text-sm"
+                    >Add Exam</a
+                  >
+                </li>
+
+              
+              </ul>
             </li>
-            <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100">
-              <i class="fa-solid fa-check-to-slot" style="color:#434544;font-size: small;"></i>
-              <a href="{% url 'add_exam' %}" class=" text-sm"
-                >Add Exam</a
-              >
+            <li class="">
+              <button id="announcement_button" class=" my-1 flex w-[100%] flex-shrink-0 items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+                <li class="">Announcements</li>
+              </button>
+              <ul id="announcement_container" class="exam_container flex-col gap-y-2 hidden transition-all ease-in-out duration-500 mx-3">
+                <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 my-1 rounded-md bg-slate-100">
+              
+                  <i class="fa-solid fa-f" style="color:#434544;font-size: small;"></i>
+                  <a href="{% url 'staff_announcements' %}" class=" text-sm"
+                    >All Announcements</a
+                  >
+                </li>
+                <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100 mb-1">
+                  <i class="fa-solid fa-check-to-slot" style="color:#434544;font-size: small;"></i>
+                  <a href="{% url 'staff_add_announcement' %}" class=" text-sm"
+                    >Add Announcement</a
+                  >
+                </li>
+
+               
+              </ul>
+            </li>
+            <li class="">
+              <button id="advert_button" class=" my-1 flex w-[100%] flex-shrink-0 items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+                <li class="">Advertisments</li>
+              </button>
+              <ul id="advert_container" class="exam_container flex-col gap-y-2 hidden transition-all ease-in-out duration-500 mx-3">
+                <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 my-1 rounded-md bg-slate-100">
+              
+                  <i class="fa-solid fa-f" style="color:#434544;font-size: small;"></i>
+                  <a href="{% url 'staff_products' %}" class=" text-sm"
+                    >All Adverts</a
+                  >
+                </li>
+                <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100 mb-1">
+                  <i class="fa-solid fa-check-to-slot" style="color:#434544;font-size: small;"></i>
+                  <a href="{% url 'staff_add_product' %}" class=" text-sm"
+                    >Add Advert</a
+                  >
+                </li>
+
+               
+              </ul>
             </li>
 
-            <li class="flex items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100">
-              <i class="fa-solid fa-paperclip" style="color:#434544;font-size: small;"></i>
-              <a href="{% url 'logout' %}" class=" text-sm">Logout</a>
-            </li>
+
+              <li class="flex flex-end items-center hover:bg-[#10644D] gap-x-2 py-2 px-2 rounded-md bg-slate-100">
+                  <i class="fa-solid fa-paperclip" style="color:#434544;font-size: small;"></i>
+                  <a href="{% url 'logout' %}" class=" text-sm">Logout</a>
+                </li>
           </ul>
         </div>
       </div>
@@ -172,5 +231,6 @@
         })
       });
     </script>
+    
   </body>
 </html>

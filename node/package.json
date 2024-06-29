@@ -1,0 +1,19 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tailwind": "tailwind build -i ../GorillaJobNet/static/Css/Style.css -o ../GorillaJobNet/static/Css/tailwind.css --watch ",
+    "minify":"cleancss ../GorillaJobNet/static/Css/tailwind.css -o ../GorillaJobNet/static/Css/style.min.css "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.4"
+  },
+  "dependencies": {
+    "clean-css-cli": "^5.6.3"
+  }
+}

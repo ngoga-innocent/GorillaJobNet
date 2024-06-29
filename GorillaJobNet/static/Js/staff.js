@@ -303,3 +303,16 @@ $(document).on("click", ".faculityDelete", function (e) {
     });
   }
 });
+$(document).ready(function () {
+  $("#exam_button").on("click", function () {
+    $("#exam_container").toggleClass("hidden");
+  });
+
+  //Announcements
+  $("#announcement_button").on("click", function () {
+    $("#announcement_container").toggleClass("hidden");
+  });
+  $("#advert_button").on("click", function () {
+    $("#advert_container").toggleClass("hidden");
+  });
+});

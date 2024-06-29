@@ -1,18 +1,23 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'Css/Style.css' %}">
+    <link rel="stylesheet" href="{% if debug %}{% static 'Css/tailwind.css' %} {% else %} {% static 'Css/style.min.css' %}{% endif %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon.ico' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+     
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">  
    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />  
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+     -->
+   <script src="{% static 'Js/jquery.js' %}"></script>
 <title>
     {% block title %}
       
@@ -21,9 +26,9 @@
      
   </head>
   </head>
-  <body id="">
+  <body id="" class="">
     <div class="wrapper relative">
-      <div class="flex flex-row justify-between items-center px-5 py-2 md:my-10">
+      <div class="flex flex-row justify-between items-center px-5 py-1 md:my-2">
       <div>
         <img class="rounded-full logo " src="{% static 'images/logo.jpg' %}" alt="">
       </div>
@@ -33,8 +38,8 @@
       
         <ul class="hidden md:flex flex-col md:flex-row items-center gap-x-2">
           <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'homepage' %}">Home</a></li>
-           <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="#">About</a></li>
-            <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="#">Service</a></li>
+           <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'announcements' %}">Announcements</a></li>
+            <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'esoko' %}">E-SOKO</a></li>
             {% if user.is_authenticated %}
             <div>
               <ul class="flex flex-col item-center md:flex-row gap-x-1">
@@ -73,10 +78,10 @@
             {% endif %}
             
         </ul>
-       <ul id="menu_container" class="hidden bg-[#10644D] min-h-screen  absolute top-0 right-0 w-[50%] px-5 z-50 transition duration-8000 ease-in-out py-8 md:hidden flex flex-col md:flex-row items-center gap-x-2">
+       <ul id="menu_container" class="hidden bg-[#10644D] min-h-screen  absolute top-0 right-0 w-[50%] px-5 z-50 transition duration-8000 ease-in-out py-8 md:hidden  flex-col md:flex-row items-center gap-x-2">
           <li class="my-1"><a class=" text-white font-bold " href="{% url 'homepage' %}">Home</a></li>
-           <li class="my-1"><a class=" text-white font-bold " href="#">About</a></li>
-            <li class="my-1"><a class=" text-white font-bold " href="#">Service</a></li>
+           <li><a class="text-white hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'announcements' %}">Announcements</a></li>
+            <li><a class="text-white hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'esoko' %}">E-SOKO</a></li>
             {% if user.is_authenticated %}
             <div>
               <ul class="flex flex-col item-center md:flex-row">
@@ -86,7 +91,7 @@
                   </button>
                 </li>
                 <li class="">
-                  <button class="btn btn-primary px-2 py-2 bg-white rounded-md text-white">{{user.username}}</button>
+                  <button class="btn btn-primary px-2 py-2 bg-white rounded-md text-black">{{user.username}}</button>
                 </li>
               </ul>
             </div>
@@ -115,12 +120,11 @@
   
 {% endblock content %}
 </div>
-<div id="modal-container" class="hidden payment-modal items-center justify-center rounded-md flex flex-col ">
+<div id="modal-container" class="hidden payment-modal items-center justify-center rounded-md  flex-col">
       
         <div class="w-[90%] md:w-[50%] bg-white py-4 rounded-md px-4 flex flex-col relative">
           <div id="message_modal" class="hidden py-2 px-2 rounded-md absolute top-2 right-2 bg-green-400">
-          
-      </div>
+        </div>
             <div class="flex flex-row items-center relative w-32 h-32 gap-x-2">
               <img src="{% static 'images/mtn.jpg' %}" alt="" class="w-[85%] h-[85%] rounded-md">
               <img src="{% static 'images/airtel.png' %}" class="w-[85%] rounded-md" alt="">
@@ -153,7 +157,7 @@
               <button type="button" id="cancel_pay_Button" class="bg-red-500 px-4 py-2 text-white font-bold rounded-md ">
                 Cancel
               </button>
-              <div id="loader" class="spinner_1 hidden flex flex-row justify-between mx-9">
+              <div id="loader" class="spinner_1 hidden  flex-row justify-between mx-9">
                 <div  class="  bg-[#10644D] px-2 py-2 items-center gap-x-2 flex flex-row rounded-md">
                 <div class="w-5 h-5 animate-spin rounded-full  border-2 border-dashed border-white"></div>
                 <p class="text-xs font-bold text-white">Processing...</p>
@@ -187,6 +191,11 @@
         });
     
   </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  
+  {% block script %}
+    
+  {% endblock script %}
+    
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
   </body>
 </html>

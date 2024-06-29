@@ -1,93 +1,180 @@
-{% extends 'base.html' %} {% block title %} Gorilla Job Net {% endblock title %}
+{% extends 'base.html' %} {% block title %}Gorilla Job Net{% endblock title %}
 {% load static %} {% block content %}
-<div id="home">
-  <div class="container flex flex-col md:flex-row md:justify-between px-10">
-    <div class="items-center flex flex-col">
-      <h3
-        data-aos="fade-right"
-        data-aos-duration="2000"
-        class="my-5 font-bold text-2xl"
-      >
-        Evaluate your SKills Before Exam
-      </h3>
-      <p data-aos-delay="200" data-aos-duration="2000" data-aos="fade-right">
-        Gorilla Job Nets Aims for Your best performance
-      </p>
-    </div>
-    <div>
-      <img
+<div class="flex flex-col">
+  <div
+    class="min-h-[85%] w-[100%] flex flex-col md:flex-row gap-x-12 items-center justify-center bg-slate-50 py-20 bg-opacity-35"
+    style="padding: 20px 20px 20px 20px; min-height: 86vh; gap: 25px;"
+  >
+    <div class="w-full md:w-[45%]">
+      <h1
         data-aos="zoom-in-right"
-        data-aos-duration="3000"
+        data-aos-duration="2000"
+        class="text-[#10644d] font-bold my-14"
+        style="
+          font-family: Titillium Web, sans-serif;
+          font-size: xx-large;
+          margin: 0px 0px 30px 10px;
+        "
+      >
+        Gorilla Job Net,
+      </h1>
+      <h1
+        data-aos="zoom-out-down"
+        data-aos-duration="2000"
         data-aos-delay="1000"
-        src="{% static 'images/bitmap.png' %}"
-        alt=""
-      />
+        class="text-[#10644d] font-bold hidden md:block"
+        style="font-family: Titillium Web, sans-serif; font-size: x-large;"
+      >
+        Augmented Reality,Expanded Market and <br />
+        Amplified Job NetWork <br />
+        with Real Word Experience
+      </h1>
+      <h1
+        data-aos="zoom-out-down"
+        data-aos-duration="2000"
+        data-aos-delay="1000"
+        class="text-[#10644d] font-bold inline-block md:hidden"
+        style="font-family: Titillium Web, sans-serif; font-size: x-large;"
+      >
+        Augmented Reality,Expanded Market and Amplified Job NetWork with Real
+        Word Experience
+      </h1>
     </div>
-    <div class="hidden md:block">
-      <img
-        data-aos="zoom-out-right"
-        data-aos-duration="4000"
-        class="right-7 w-28 h-28 md:w-56 md:h-56 rounded-full rounded-full"
-        src="{% static 'images/logo.jpg' %}"
-        alt=""
-      />
+    <div
+      data-aos="fade-right"
+      data-aos-duration="2000"
+      data-aos-delay="500"
+      class="max-w-[30%]"
+      style="max-width: 75vh;"
+    >
+      <img src="{% static 'images/World.svg' %}" alt="" />
     </div>
   </div>
-
-  <div class="flex flex-col md:flex-row jsustify-center items-center">
-    <img
-      class="hidden md:block"
-      src="{% static 'images/subscription.svg' %}"
-      alt=""
-    />
+  <div
+    class="h-[50vh] w-[90%] mx-auto my-3"
+    data-aos="zoom-in-right"
+    data-aos-duration="2000"
+    style="height: 65vh;"
+  >
     <div
-      class="flex flex-col bg-white border md:border-none items-center relative rounded-md items-center min-w-[90%] md:min-w-[30%] justify-center px-2 py-2 shadow-xs shadow-black"
+      class="relative w-full h-full rounded-lg md:rounded-tl-[30%] md:rounded-br-[30%] md:rounded-full overflow-hidden"
+      style="background-image: url('{{ featured_product.thumbnail.url }}'); background-position: center; background-repeat: no-repeat; background-size: cover; height: 100%;"
     >
-      <h3 class="font-bold text-md md:text-lg">
-        Access All Exams the :
-      </h3>
-      <ul>
-        <li class="flex flex-row items-center gap-x-2">
-          <p class="text-sm font-bold">One Exam :</p>
-          <p class="text-sm">500rwf</p>
-        </li>
-        <li class="flex flex-row items-center gap-x-2">
-          <p class="text-sm font-bold">Whole Day on :</p>
-          <p class="text-sm">5000rwf</p>
-        </li>
-        <li class="flex flex-row items-center gap-x-2">
-          <p class="text-sm font-bold">Whole Week on :</p>
-          <p class="text-sm">10000rwf</p>
-          <p class="text-xs">Recommended</p>
-        </li>
-        <li class="flex flex-row items-center gap-x-2">
-          <p class="text-sm font-bold">Whole Month on :</p>
-          <p class="text-sm">20000rwf</p>
-        </li>
-      </ul>
-      <button
-        class="animate-pulse bg-green-800 w-14 h-14 rounded-full absolute -top-4 -right-4"
-      ></button>
-      <button
-        id="Subscription"
-        data-aos="fade-right"
-        data-aos-delay="700"
-        data-aos-duration="700"
-        class="px-2 py-2 bg-[#074526] text-white font-bold rounded-md my-2"
+      <div
+        class="absolute inset-0 bg-black bg-opacity-50 flex flex-col md:flex-col items-center justify-center"
       >
-        Get Subscription
-      </button>
+        <h2 class="text-2xl font-bold text-white mb-4">Recent Products</h2>
+        <div
+          data-aos="fade-right"
+          data-aos-duration="2000"
+          data-aos-delay="1500"
+          class="flex flex-col md:flex-row flex-wrap justify-center gap-3 w-[80%]"
+        >
+          {% for product in products %}
+          <a
+            href="{% url 'single_product' product.id %}"
+            class="rounded-lg overflow-hidden flex-1 hover:bg-slate-500 duration-500 ease-in-out transition-all"
+          >
+            <img
+              src="{{ product.thumbnail.url }}"
+              alt="{{ product.name }}"
+              class="w-full h-full object-cover"
+            />
+          </a>
+          {% endfor %}
+        </div>
+      </div>
     </div>
-    <div class="self-center flex flex-col w-full mx-auto">
-      <button
-        class="bg-[#074526] text-white max-w-[70%] self-center font-bold px-3 py-4 rounded-md my-5 md:my-2"
-        data-aos="fade-down"
-        data-aos-delay="4000"
-        data-aos-duration="6000"
+  </div>
+  <div id="home">
+    <!-- Online Exams Section -->
+    <div class="container flex flex-col md:flex-row md:justify-between px-10">
+      <div class="items-center flex flex-col">
+        <h3
+          data-aos="fade-right"
+          data-aos-duration="2000"
+          class="my-5 font-bold text-2xl"
+        >
+          Evaluate your Skills Before Exam
+        </h3>
+        <p data-aos-delay="200" data-aos-duration="2000" data-aos="fade-right">
+          Gorilla Job Nets Aims for Your Best Performance
+        </p>
+      </div>
+      <div>
+        <img
+          data-aos="zoom-in-right"
+          data-aos-duration="3000"
+          data-aos-delay="1000"
+          src="{% static 'images/bitmap.png' %}"
+          alt="Bitmap"
+        />
+      </div>
+      <div class="hidden md:block">
+        <img
+          data-aos="zoom-out-right"
+          data-aos-duration="4000"
+          class="right-7 w-28 h-28 md:w-56 md:h-56 rounded-full"
+          src="{% static 'images/logo.jpg' %}"
+          alt="Logo"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row justify-center items-center">
+      <img
+        class="hidden md:block"
+        src="{% static 'images/subscription.svg' %}"
+        alt="Subscription"
+      />
+      <div
+        class="flex flex-col bg-white border md:border-none relative rounded-md items-center min-w-[90%] md:min-w-[30%] justify-center px-2 py-2 shadow-xs shadow-black"
       >
-        <a href="{% url 'quiz_home' %}" class="nav-link">Explore Our Exams</a>
-      </button>
+        <h3 class="font-bold text-md md:text-lg">Access All Exams:</h3>
+        <ul>
+          <li class="flex flex-row items-center gap-x-2">
+            <p class="text-sm font-bold">One Exam:</p>
+            <p class="text-sm">500 RWF</p>
+          </li>
+          <li class="flex flex-row items-center gap-x-2">
+            <p class="text-sm font-bold">Whole Day:</p>
+            <p class="text-sm">5000 RWF</p>
+          </li>
+          <li class="flex flex-row items-center gap-x-2">
+            <p class="text-sm font-bold">Whole Week:</p>
+            <p class="text-sm">10000 RWF</p>
+            <p class="text-xs">Recommended</p>
+          </li>
+          <li class="flex flex-row items-center gap-x-2">
+            <p class="text-sm font-bold">Whole Month:</p>
+            <p class="text-sm">20000 RWF</p>
+          </li>
+        </ul>
+        <button
+          class="animate-pulse bg-green-800 w-14 h-14 rounded-full absolute -top-4 -right-4"
+        ></button>
+        <button
+          id="Subscription"
+          data-aos="fade-right"
+          data-aos-delay="700"
+          data-aos-duration="700"
+          class="px-2 py-2 bg-[#074526] text-white font-bold rounded-md my-2"
+        >
+          Get Subscription
+        </button>
+      </div>
+      <div class="self-center flex flex-col w-full mx-auto">
+        <button
+          class="bg-[#074526] text-white max-w-[70%] self-center font-bold px-3 py-4 rounded-md my-5 md:my-2"
+          data-aos="fade-down"
+          data-aos-delay="4000"
+          data-aos-duration="6000"
+        >
+          <a href="{% url 'quiz_home' %}" class="nav-link">Explore Our Exams</a>
+        </button>
+      </div>
     </div>
   </div>
 </div>
+
 {% endblock content %}

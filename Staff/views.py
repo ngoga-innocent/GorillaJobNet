@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views import View
 from django.http import JsonResponse
 from Quiz.models import Quiz,Faculties,Question,Answer
@@ -7,6 +7,11 @@ from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse_lazy
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
+from Announcement.models import Announcement,AnnouncementCategory
+from Announcement.announcement_form import AnnouncementForm
+from ESOKO.models import Product,Product_Category
+from ESOKO.add_product_form import AddProductForm
+from django.contrib.auth.models import User
 # Create your views here.
 
 def is_staff(user):
@@ -14,8 +19,12 @@ def is_staff(user):
 
 @user_passes_test(is_staff, login_url=reverse_lazy('login'))
 def Home(request):
-    
-        return render(request,'staff_homepage.html')
+        exam=Quiz.objects.all().count()
+        announcement=Announcement.objects.all().count()
+        product=Product.objects.all().count()
+        user=User.objects.all().count()
+        context={'exams':exam, 'product':product,'announcement':announcement,'users':user}
+        return render(request,'staff_homepage.html',context)
     
 class Exam(View):
     @method_decorator(staff_member_required(login_url=reverse_lazy('login')))
@@ -157,3 +166,70 @@ def get_quiz_questions(request):
             return JsonResponse({'status': True, 'questions': questions_data})
         except Quiz.DoesNotExist:
             return JsonResponse({"status": False, "message": "Quiz not found"}, status=404)
+# Announcement View
+class AnnouncementView(View):
+     def get(self,request,id=None):
+        if id is not None:
+             announcement=Announcement.objects.get(id=id)
+             context={'announcement':announcement}
+             return render(request,'Announcement/single_announcement.html',context)
+        annoucements=Announcement.objects.all()
+        announcement_category=AnnouncementCategory.objects.all()
+        context={"announcements":annoucements, "announcement_category":announcement_category}
+        return render(request,'Announcement/announcement.html',context)
+def Get_Category_announcement(request,id=None):
+     announcement_category=AnnouncementCategory.objects.all()
+     if id is not None:
+          category=AnnouncementCategory.objects.get(id=id)
+          announcements=Announcement.objects.filter(category=category)
+          context={"announcements":announcements,"announcement_category":announcement_category}
+          return render(request,'Announcement/announcement.html',context)
+class AnnouncementPostEdit(View):
+     def get(self,request,id=None):
+          if id is not None:
+                announcement=Announcement.objects.get(id=id)
+                form=AnnouncementForm(instance=announcement)
+                context={"form":form}
+          else:
+                form=AnnouncementForm()
+                context={"form":form}      
+          return render(request,'Announcement/add_announcement.html',context)
+     def post(self,request):
+          form=AnnouncementForm(request.POST,request.FILES)
+          if form.is_valid():
+               form.save(user=request.user)
+               return redirect('staff_announcements')  
+          return render(request,'Announcement/add_announcement.html',{'form':form})  
+
+
+class AdvertiserView(View):
+     def get(self,request,id=None):
+          product_category=Product_Category.objects.all()
+          if id is not None:
+             advertisment=Product.objects.get(id=id)
+             context={'product':advertisment,'category':product_category}
+             return render(request,'Advertisment/singleAdd.html',context)
+          advertisments=Product.objects.all().order_by('-created_at')
+          context={"advertisments":advertisments,'category':product_category}
+          return render(request,'Advertisment/AllAdds.html',context)
+class AdvertPostEdit(View):
+     def get(self,request,id=None):
+          if id is not None:
+                announcement=Announcement.objects.get(id=id)
+                form=AddProductForm(instance=announcement)
+                context={"form":form}
+          else:
+                form=AddProductForm()
+                context={"form":form}      
+          return render(request,'Advertisment/Add_product.html',context)
+     def post(self,request):
+          form=AddProductForm(request.POST,request.FILES)
+          if form.is_valid():
+               form.save()
+               return redirect('staff_products')  
+          print(form)
+          return render(request,'Advertisment/Add_product.html',{'form':form}) 
+               
+          
+
+     

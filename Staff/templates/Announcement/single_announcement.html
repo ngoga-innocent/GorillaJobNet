@@ -1,0 +1,105 @@
+{% extends 'staff_base.html' %} {% load static %} 
+
+{% block title %}
+    Staff -{{announcement.title}}
+{% endblock title %}
+    
+
+{% block content %}
+<div class="flex flex-row gap-x-4 ">
+    <button class="py-2 px-3 rounded-md bg-red-400 text-white font-bold">
+        Delete
+    </button>
+    <button class="py-2 px-3 rounded-md bg-[#10644D] text-white font-bold">
+        Edit
+    </button>
+</div>
+    <div class="content px-4 flex flex-row gap-x-2 my-2">
+    
+  <div class="flex flex-col items-start px-4 w-[80%] border rounded-lg">
+    <div
+      class="bg-gray-200 w-[100%] py-4 px-4 my-2 rounded-t-2xl flex flex-row justify-between"
+    >
+      <div>
+        <h1 class="font-bold text-lg">{{announcement.title|upper}}</h1>
+        <p>{{announcement.location}}</p>
+        <p><p>{{url}}</p></p>
+        <div class="flex flex-row items-center gap-x-3">
+          <div>
+            <p class="text-sm text-[#10644D]">Posted on</p>
+            <p class="text-sm font-semibold">
+              {{ announcement.created_at|date:"F,j,Y" }}
+            </p>
+          </div>
+          <div>
+            <p class="text-sm">Deadline</p>
+            <p class="text-sm font-bold">{{announcement.deadline}}</p>
+          </div>
+        </div>
+        <div>
+            <p class="text-sm">Experience</p>
+            <p class="text-sm font-bold">
+              {% if announcement.experience %}
+              {{announcement.experience}}
+              {% else %}
+              <p class="text-sm font-bold">Not Specified</p>
+              {% endif %}
+            </p>
+  
+        </div>
+        <div >
+          <a class="text-[#10644d] text-sm font-medium" href="{{announcement.application_link}}"> View More</a>
+        </div>
+       
+       
+      </div>
+      <div class="w-[40%] flex flex-wrap">
+        <div class="announcer_details flex flex-row items-center">
+          {% if announcement.announcer_logo %}
+          <img
+            src="{{announcement.announcer_logo.url}}"
+            class="w-14 h-14 rounded-full"
+            alt=""
+          />
+          {% else %}
+          <img
+            src="{% static 'images/logo.jpg' %}"
+            class="w-14 h-14 rounded-full"
+            alt=""
+          />
+          {% endif %}
+
+          <div>
+            <h2 class="text-xl text-[#10644D] font-bold">
+              {{announcement.company_name}}
+            </h2>
+          </div>
+        </div>
+        <p>{{announcement.announcer_description | safe |truncatechars:200}}</p>
+      </div>
+    </div>
+
+    <p>{{announcement.description|safe}}</p>
+    <div class="my-2 bg-slate-200 py-2 px-2 w-[100%] rounded-xl flex flex-row justify-between">
+        <div>
+            <p>Share</p> 
+        <div class="flex flex-row gap-x-3">
+            <a href="whatsapp://send?text={{ announcement.title }}%0A{{ request.build_absolute_uri }}">
+                 <i class="fa-brands fa-whatsapp" style="font-size: x-large; color: green;"></i>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+                <i class="fa-brands fa-facebook" style="font-size: x-large;color: #1877f2;"></i>
+            </a>
+            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ announcement.title }}&via=yourTwitterHandle">
+                <i class="fa-brands fa-twitter" style="font-size: x-large;color: #1877f2;"></i>
+            </a>
+        </div>
+        </div>
+        <!-- {% if announcement.application_link %}
+            <button class="text-white  px-4 rounded-md bg-[#10644D]"><a href="{{announcement.application_link}}">Apply</a></button>
+        {% endif %} -->
+        
+    </div>
+  </div>
+{% endblock content %}
+    

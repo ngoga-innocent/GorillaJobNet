@@ -1,0 +1,28 @@
+{% extends 'staff_base.html' %} {% block content %}
+<div
+  class="flex flex-col max-h-[90%] flex-shrink-0 overflow-y-scroll scrollbar-hidden"
+>
+  <div
+    class="flex flex-row max-w-[90%] overflow-x-scroll scrollbar-hidden items-center z-20"
+  >
+    {% for category in announcement_category %}
+    <a
+      href="{% url 'staff_announcement_category' category.id %}"
+      class="py-2 flex flex-row items-center justify-between px-4 bg-slate-400 rounded-md w-[22%] m-1 hover:bg-[#10644D] hover:text-white font-bold transition-all ease-in-out duration-500"
+    >
+      <p class="font-bold">{{category.name}}</p>
+      <div
+        class="text-white bg-orange-500 w-6 h-6 items-center justify-center flex flex-col rounded-full"
+      >
+        {{category.get_category_annoucement.count}}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- All Announcements -->
+  <div class="flex flex-col">
+    {% include 'Announcement/announcement_partial.html' %}
+  </div>
+</div>
+{% endblock content %}

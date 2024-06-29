@@ -1,0 +1,24 @@
+{% extends 'staff_base.html' %} {% block content %}
+<div class="grid grid-cols-4">
+  {% for product in advertisments %}
+  <a
+    href="{% url 'staff_single_product' product.id %}"
+    class="rounded-lg overflow-hidden flex-shrink-0 mx-1 border h-32 px-4 py-2 relative"
+    style="background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
+  >
+    <div
+      class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    >
+      <p class="text-white">{{product.name}}</p>
+    </div>
+    {% if product.price %}
+    <div
+      class="absolute top-0 lef-1 z-10 bg-orange-400 text-white font-bold px-4 py-2 rounded-tr-xl rounded-bl-xl"
+    >
+      {{product.price}}
+    </div>
+    {% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% endblock content %}
