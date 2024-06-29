@@ -95,16 +95,16 @@ WSGI_APPLICATION = 'GorillaJobNet.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
-# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'gorilla_job_net', # This is where you put the name of the db file. 
-                 # If one doesn't exist, it will be created at migration time.
-    }
+    'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'gorilla_job_net', # This is where you put the name of the db file. 
+#                  # If one doesn't exist, it will be created at migration time.
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
