@@ -1,6 +1,7 @@
 {% extends 'base.html' %} {% load static %} {% block title %} Gorilla Job Net
 E-SOKO {% endblock title %} {% block content %}
 <div class="flex flex-col items-center md:flex-row gap-x-3 px-4">
+  {% if product_categories %}
   <div
     class="md:min-h-screen w-[100%] gap-x-2 md:w-[20%] flex-1 bg-slate-100 rounded-lg px-2 py-2 max-h-screen overflow-y-scroll flex md:flex-col scrollbar-hidden"
   >
@@ -62,6 +63,8 @@ E-SOKO {% endblock title %} {% block content %}
       >
         &gt;
       </button>
+      {% if products %}
+
       <div id="carousel" class="flex flex-row gap-x-2 overflow-hidden h-[100%]">
         {% for product in products %}
         <a
@@ -112,10 +115,13 @@ E-SOKO {% endblock title %} {% block content %}
       </div>
       {% endif %}
     </div>
-    {% endfor %} {% endif %}
+    {% endfor %} {% endif %}{% else %}
+    <p>No Product Available</p>
+    {% endif %}
   </div>
+  {% endif %} {% else %}
+  <p>No product Available for Now please be Patient</p>
   {% endif %}
-
   <div class="hidden">
     <form
       method="post"

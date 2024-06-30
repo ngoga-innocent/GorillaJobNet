@@ -6,7 +6,7 @@
     style="padding: 20px 20px 20px 20px; min-height: 86vh; gap: 25px;"
   >
     <div>
-      <div class="flex flex-row">
+      <div class="flex flex-col items-center justify-center md:flex-row">
         <div class="w-full md:w-[45%]">
           <h1
             data-aos="zoom-in-right"
@@ -46,7 +46,7 @@
           data-aos="fade-right"
           data-aos-duration="2000"
           data-aos-delay="500"
-          class="max-w-[10%]"
+          class="max-w-[10%] my-2"
           style="max-width: 45vh;"
         >
           <!-- <img src="{% static 'images/World.svg' %}" alt="" /> -->
@@ -69,6 +69,7 @@
           </div>
         </div>
       </div>
+      {% if products %}
       <div>
         <h1
           class="text-[#10644d] font-bold my-14"
@@ -78,13 +79,13 @@
             margin: 0px 0px 30px 10px;
           "
         >
-          Our Recent Productss
+          Our Recent Products
         </h1>
         <div
           data-aos="fade-right"
           data-aos-duration="2000"
           data-aos-delay="1500"
-          class="flex flex-col md:flex-row flex-wrap justify-center gap-3 w-[80%]"
+          class="flex flex-col md:flex-row flex-wrap justify-center gap-3 w-[80%] mx-auto"
         >
           {% for product in products %}
           <a
@@ -100,6 +101,8 @@
           {% endfor %}
         </div>
       </div>
+
+      {% endif %}
     </div>
     <div id="">
       <!-- Online Exams Section -->

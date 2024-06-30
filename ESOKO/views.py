@@ -23,6 +23,7 @@ class ESOKOView(View):
             context={'product_categories':product_categories}
             return redirect('/esoko')
         else:
+            print(form.errors)
             product_categories = Product_Category.objects.all()
             context={'product_categories':product_categories,"form":AddProductForm}
             return render(request,'ESOKO.html',context)

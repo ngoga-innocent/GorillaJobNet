@@ -81,18 +81,18 @@
         </ul>
        <ul id="menu_container" class="hidden bg-[#10644D] min-h-screen  absolute top-0 right-0 w-[50%] px-5 z-50 transition duration-8000 ease-in-out py-8 md:hidden  flex-col md:flex-row items-center gap-x-2">
           <li class="my-1"><a class=" text-white font-bold " href="{% url 'homepage' %}">Home</a></li>
-           <li><a class="text-white hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'announcements' %}">Announcements</a></li>
-            <li><a class="text-white hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'esoko' %}">E-SOKO</a></li>
+           <li class="my-1"><a class="text-white hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'announcements' %}">Announcements</a></li>
+            <li class="my-1 items-start"><a class="text-white hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'esoko' %}">E-SOKO</a></li>
             {% if user.is_authenticated %}
             <div>
               <ul class="flex flex-col item-center md:flex-row">
-                <li class="">
-                  <button id="login" class=" bg-transparent item-center justify-center px-2 py-2 bg-[#00cba9] rounded-md">
+                <li class="my-1 items-start">
+                  
                     <a class=" text-red-400" href="{% url 'logout' %}">Logout</a>
-                  </button>
+                  
                 </li>
-                <li class="">
-                  <button class="btn btn-primary px-2 py-2 bg-white rounded-md text-black">{{user.username}}</button>
+                <li class=" text-slate-200 font-bold">
+                  {{user.username}}
                 </li>
               </ul>
             </div>
@@ -100,12 +100,12 @@
             <div class="my-5">
               <ul class="flex flex-col item-center md:flex-row">
                 <li class="nav-item">
-                  <button id="login" class="w-24 py-2 rounded-md bg-transparent ">
+                  
                     <a class="nav-link text-white" href="{% url 'login' %}">Login</a>
-                  </button>
+                  
                 </li>
                 <li class="nav-item my-2">
-                  <button class="w-24 py-2 rounded-md bg-transparent text-white  ">Get Started</button>
+                  <a class="nav-link text-white" href="{% url 'signup' %}">Get Started</a>
                 </li>
               </ul>
             </div> 

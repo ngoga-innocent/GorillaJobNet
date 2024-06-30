@@ -1,6 +1,21 @@
 <!-- add_product.html -->
 
-{% extends 'staff_base.html' %} {% block content %}
+{% extends 'staff_base.html' %} {% block content %} {% if form.errors %}
+<div class="alert alert-danger">
+  <ul>
+    {% for field, errors in form.errors.items %}
+    <li class="text-red-500">
+      {{ field }}:
+      <ul>
+        {% for error in errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
 <div
   class="container mx-auto bg-white px-8 py-3 flex flex-col rounded-lg shadow-md"
 >
