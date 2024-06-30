@@ -12,14 +12,17 @@
       sizes="32x32"
       href="{% static 'images/favicon.ico' %}"
     />
+    <link rel="stylesheet" href="{% if debug %}{% static 'Css/tailwind.css' %} {% else %} {% static 'Css/style.min.css' %}{% endif %}">
     <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      
     />
+    <script src="{% static 'Js/jquery.js' %}"></script>
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
       
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
   </head>
   <body class="">
     <div class="hidden sm:block md:flex md:flex-row shadow-b-black shadow-md mb-1 py-2 justify-between px-2 items-center">
@@ -42,7 +45,7 @@
         
     {% endblock hero %}
         
-    <div id="modal-container" class="hidden payment-modal items-center justify-center rounded-md flex flex-col ">
+    <div id="modal-container" class="hidden payment-modal items-center justify-center rounded-md md:flex flex-col ">
       
         <div class="w-[50%] bg-white py-4 rounded-md px-4 flex flex-col relative">
           <div id="message_modal" class="hidden py-2 px-2 rounded-md absolute top-2 right-2 bg-green-400">
@@ -57,7 +60,7 @@
               {% csrf_token %}
               <div class="flex flex-row gap-x-2">
                 <input name="subsciption_type" value="one" required type="radio">
-                <label for="">1 Exam 500 Rwf</label>
+                <label for="">1 Exam 5000 Rwf</label>
               </div>
 
               <div class="flex flex-row gap-x-2">

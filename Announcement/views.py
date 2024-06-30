@@ -11,6 +11,8 @@ import requests
 import random
 import string
 from Payment.models import Payment,OTP
+from django.utils import timezone
+import datetime
 # Create your views here.
 def generate_otp():
     # otp = ''.join(random.choices(string.digits, k=6))
@@ -27,11 +29,11 @@ class AnnouncementView(View):
 
         if id is not None:
             category=AnnouncementCategory.objects.get(id=id)
-            announcements = Announcement.objects.filter(category=category).order_by('-created_at')[:1000]
+            announcements = Announcement.objects.filter(category=category,deadline__gte=datetime.datetime.now()).order_by('-created_at')[:1000]
             html = render_to_string('announcement_partial.html', {'announcements': announcements})
             return JsonResponse({'html': html})
         
-        announcements = Announcement.objects.all().order_by('-created_at')[:1000]
+        announcements = Announcement.objects.filter(deadline__gte=datetime.datetime.now()).order_by('-created_at')[:1000]
         context = {'form': form, 'announcements': announcements, 'ann_categories': categories}
         return render(request, 'announcements.html', context)
     @method_decorator(login_required, name='dispatch')

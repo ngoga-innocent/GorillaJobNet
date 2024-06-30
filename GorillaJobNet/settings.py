@@ -65,7 +65,8 @@ MIDDLEWARE = [
 
 STORAGES = {
     'default': {
-        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        # 'BACKEND': 'django.core.files.storage.FileSystemStorage',
+         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
         'LOCATION': os.path.join(BASE_DIR, 'media'),
     },
     'staticfiles': {
@@ -156,14 +157,14 @@ LOGIN_URL='/account'
 LOGIN_REDIRECT_URL='/account'
 # CLOUDINARY sETTING
 CLOUDINARY_STORAGE={
-    'CLOUD_NAME':'dlbdsv95f',
-    'API_KEY':'226668397868968',
-    "API_SECRET":'lTcafDxVVVnGLSpDcxqDJRt8S2E'
+    'CLOUD_NAME':'dk9bsucmz',
+    'API_KEY':'167768518225832',
+    "API_SECRET":'pbEaQpZInExogDduBvYSRadLcs4'
 }
 
 # DEFAULT_FILE_STORAGE='cloudinary_storage.storage.MediaCloudinaryStorage'
 ALLOWED_HOSTS = ['*']
-INTERNAL_IPS = ('127.0.0.1','localhost:8000')
+# INTERNAL_IPS = ('127.0.0.1','localhost:8000')
 # DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Logging
 # LOGGING = {

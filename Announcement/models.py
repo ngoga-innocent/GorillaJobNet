@@ -2,7 +2,21 @@ from django.db import models
 import uuid
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
+import datetime
 # Create your models here.
+def announcement_thumbnail_path(instance, filename):
+    # Get the current date
+    now = datetime.datetime.now()
+    # Calculate the year, month, and week number
+    year = now.year
+    month = now.month
+    _, week, _ = now.isocalendar()
+    # Extract the file extension
+    ext = filename.split('.')[-1]
+    # Create a filename based on the current time
+    filename = f'{now.strftime("%Y%m%d%H%M%S")}.{ext}'
+    # Return the path to the file
+    return f'Announcements/thumbnails/{year}/{month}/week_{week}/{filename}'
 class AnnouncementCategory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255,unique=True)
@@ -10,7 +24,7 @@ class AnnouncementCategory(models.Model):
     def __str__(self):
         return f"{self.name}"
     def get_category_annoucement(self):
-        return self.announcement_set.all()
+        return self.announcement_set.filter(deadline__gte=datetime.datetime.now())
     class Meta:
         verbose_name = "Announcement Category"
         verbose_name_plural = "Announcement Categories"
@@ -20,7 +34,7 @@ class Announcement(models.Model):
     category=models.ForeignKey(AnnouncementCategory,on_delete=models.CASCADE)
     title=models.CharField(max_length=255)
     slug=models.CharField(max_length=255,null=True,blank=True)
-    thumbnail=models.ImageField(upload_to='Announcements/thumbnails',null=True)
+    thumbnail=models.ImageField(upload_to=announcement_thumbnail_path ,null=True)
     description=RichTextField()
     application_link=models.URLField(max_length=255,null=True,blank=True)
     company_name=models.CharField(max_length=255)

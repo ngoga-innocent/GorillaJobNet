@@ -11,9 +11,13 @@
       sizes="32x32"
       href="{% static 'images/favicon.ico' %}"
     />
-    <link rel="stylesheet" href="{% static 'Css/Style.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'Css/Style.css' %}" /> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link
+      rel="stylesheet"
+      href="{% if debug %}{% static 'Css/tailwind.css' %} {% else %} {% static 'Css/style.min.css' %}{% endif %}"
+    />
   </head>
   <body
     class="flex flex-col items-center justify-center bg-gray-100 max-h-screen"
@@ -28,7 +32,7 @@
       <div class="spinner"></div>
     </div>
     <div
-      class="hidden self-center items-center justify-center flex flex-col w-full bg-gray-200 min-h-screen"
+      class="hidden self-center items-center justify-center md:flex flex-col w-full bg-gray-200 min-h-screen"
       id="results"
     ></div>
     <script src="{% static 'Js/script.js' %}"></script>

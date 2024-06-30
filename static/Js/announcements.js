@@ -1,11 +1,10 @@
 $(document).ready(function () {
-  $("#post_announcements_modal_button").on("click", function () {
+  $(".post_announcements_modal_button").on("click", function () {
     $("#announcement_spinner").removeClass("hidden");
     $.ajax({
       url: "/announcements/check_ann",
       method: "GET",
       success: function (data) {
-        console.log(data);
         if (data.success) {
           $("#post_announcement_modal").removeClass("hidden");
           $("#announcement_spinner").addClass("hidden");

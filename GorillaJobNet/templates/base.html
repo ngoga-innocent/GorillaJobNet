@@ -40,6 +40,7 @@
           <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'homepage' %}">Home</a></li>
            <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'announcements' %}">Announcements</a></li>
             <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'esoko' %}">E-SOKO</a></li>
+            <li><a class="nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'quiz_home' %}">Exams</a></li>
             {% if user.is_authenticated %}
             <div>
               <ul class="flex flex-col item-center md:flex-row gap-x-1">
@@ -49,7 +50,7 @@
                 </li>
                 {% if user.is_staff %}
                 <li class="px-2 py-2 bg-[#10644D] rounded-md hover:bg-green-500 hover:transition ease-in">
-                  <a href="{% url 'staff_home'  %}" class="">Dashboard</a>
+                  <a href="{% url 'staff_home'  %}" class="text-white font-bold">Dashboard</a>
                 </li>
                   
                 {% endif %}

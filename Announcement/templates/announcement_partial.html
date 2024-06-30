@@ -21,7 +21,9 @@
     </div>
     <div class="flex flex-col flex-1">
       <h2 class="text-[#10644D] font-bold mb-3">{{announcement.title}}</h2>
-      <p class="hidden md:block text-sm">{{announcement.slug}}</p>
+      <p class="hidden md:block text-sm max-w-1/2">
+        {{announcement.slug}}
+      </p>
       <div class="flex flex-col md:flex-row gap-x-1 my-2">
         <p class="font-bold">{{announcement.company_name}} |</p>
         <div class="flex flex-row items-center gap-x-1">
