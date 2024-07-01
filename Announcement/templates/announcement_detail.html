@@ -2,7 +2,7 @@
 -{{announcement.title}} {% endblock title %} {% block content %}
 
 <div class="content px-4 flex items-center flex-col md:flex-row gap-x-2 my-2">
-  <div class="flex flex-col items-start px-4 w-[95%] md:w-[80%] border rounded-lg">
+  <div class="flex flex-col flex-wrap items-start px-4 w-[98%] md:w-[80%] border rounded-lg">
     <div
       class="bg-gray-200 w-[100%] py-4 px-4 my-2 rounded-t-2xl flex flex-col md:flex-row justify-between"
     >
@@ -10,7 +10,7 @@
         <h1 class="font-bold text-lg">{{announcement.title|upper}}</h1>
         <p>{{announcement.location}}</p>
         
-        <div class="flex flex-row items-center gap-x-3">
+        <div class="flex flex-col md:flex-row md:items-center gap-x-3">
           <div>
             <p class="text-sm text-[#10644D]">Posted on</p>
             <p class="text-sm font-semibold">
