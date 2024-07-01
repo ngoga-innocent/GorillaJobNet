@@ -28,6 +28,16 @@
     <div class="content flex flex-col" id="">
       <div class="flex flex-col bg-[#10644D] md:py-2 items-center">
         <div
+          class="md:hidden flex flex-row items-center justify-between gap-x-12 my-4"
+        >
+          <img
+            src="{% static 'images/logo.jpg' %}"
+            class="w-7 h-7 rounded-full"
+            alt=""
+          />
+          <a href="{% url 'homepage' %} " class="text-white">Home</a>
+        </div>
+        <div
           class="hidden md:flex md:flex-row w-full mb-1 justify-between px-2 items-center"
         >
           <a href="{% url 'homepage' %}">

@@ -340,5 +340,17 @@ input:focus {
   .hidden{
     display: none;
   }
+  #menu_container{
+    animation: slideLeft 0.5s forwards;
+  }
+  @keyframes slideLeft {
+    from{
+        transform: translateX(-100%);
+
+    }
+    to{
+        transform: translateX(50%);
+    }
+  }
    
         

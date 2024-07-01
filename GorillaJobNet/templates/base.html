@@ -79,8 +79,9 @@
             {% endif %}
             
         </ul>
-       <ul id="menu_container" class="hidden bg-[#10644D] min-h-screen  absolute top-0 right-0 w-[50%] px-5 z-50 transition duration-8000 ease-in-out py-8 md:hidden  flex-col md:flex-row items-center gap-x-2">
+       <ul id="menu_container" class="hidden bg-[#10644D] min-h-screen  absolute top-0 right-0 w-[50%] px-5 z-50 transition-all duration-8000 ease-in-out py-8 md:hidden  flex-col md:flex-row items-center gap-x-2">
           <li class="my-1"><a class=" text-white font-bold " href="{% url 'homepage' %}">Home</a></li>
+          <li><a class="text-white nav-link hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'quiz_home' %}">Exams</a></li>
            <li class="my-1"><a class="text-white hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'announcements' %}">Announcements</a></li>
             <li class="my-1 items-start"><a class="text-white hover:text-[#10644D] hover:scale-x-150 transition ease-in-out" href="{% url 'esoko' %}">E-SOKO</a></li>
             {% if user.is_authenticated %}
@@ -110,9 +111,9 @@
               </ul>
             </div> 
             {% endif %}
-            <li class="absolute top-2 right-2">
+            <!-- <li class="absolute top-2 right-2">
               <button class="w-7 h-7 rounded-full bg-red-400 close_menu"><i class="fa-solid fa-x" style="font-weight: bolder; color: white;"></i></button>
-            </li>
+            </li> -->
         </ul>
     </div>
 
@@ -190,6 +191,11 @@
               $('#menu_container').toggleClass('hidden');
             })
         });
+        $(document).on('click',function(e) {
+          if (!$(e.target).closest('#menu_container').length &&!$(e.target).closest('#menu').length) {
+            $('#menu_container').addClass('hidden');
+          }
+        })
     
   </script>
   
