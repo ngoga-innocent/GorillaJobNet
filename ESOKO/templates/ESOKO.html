@@ -1,9 +1,9 @@
 {% extends 'base.html' %} {% load static %} {% block title %} Gorilla Job Net
 E-SOKO {% endblock title %} {% block content %}
-<div class="flex flex-col items-center md:flex-row gap-x-3 px-4">
+<div class="flex flex-col md:flex-row gap-x-3 px-4">
   {% if product_categories %}
   <div
-    class="md:min-h-screen w-[100%] gap-x-2 md:w-[20%] flex-1 bg-slate-100 rounded-lg px-2 py-2 max-h-screen overflow-y-scroll flex md:flex-col scrollbar-hidden"
+    class="md:min-h-screen w-[100%] gap-x-2 md:w-[20%] bg-slate-100 rounded-lg px-2 py-2 max-h-screen overflow-y-scroll flex md:flex-col scrollbar-hidden"
   >
     {% for category in product_categories %}
     <a
@@ -23,13 +23,13 @@ E-SOKO {% endblock title %} {% block content %}
   </div>
   {% if category_products %}
   <div
-    class="w-[100%] md:w-[80%] max-h-screen overflow-y-scroll scrollbar-hidden grid grid-cols-2 md:grid-cols-4 gap-2"
+    class="w-[100%] md:w-[80%] max-h-screen overflow-y-scroll items-start justify-start scrollbar-hidden grid grid-cols-2 md:grid-cols-4 gap-2"
   >
     {% for product in category_products %}
     <a
       href="{% url 'single_product' product.id %}"
-      class="rounded-lg overflow-hidden flex-shrink-0 mx-1 border h-32 px-4 py-2 relative"
-      style="background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
+      class="rounded-lg overflow-hidden mx-1 border px-4 py-2 relative"
+      style="height: 32vh; background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
     >
       <div
         class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
@@ -47,8 +47,10 @@ E-SOKO {% endblock title %} {% block content %}
     {% endfor %}
   </div>
   {% else %}
-  <div class="w-[80%] max-h-screen overflow-y-scroll scrollbar-hidden">
-    <div class="relative w-full h-[40%] justify-center">
+  <div
+    class="w-[70%] max-h-screen flex flex-col overflow-y-scroll scrollbar-hidden"
+  >
+    <div class="relative w-[100%] h-[40%] mb-20 justify-center">
       <button
         class="absolute left-0 top-1/2 z-10 h-14 w-14 rounded-full px-4 bg-white bg-opacity-50 hover:bg-opacity-75"
         onclick="Left()"
@@ -65,16 +67,20 @@ E-SOKO {% endblock title %} {% block content %}
       </button>
       {% if products %}
 
-      <div id="carousel" class="flex flex-row gap-x-2 overflow-hidden h-[100%]">
+      <div
+        id="carousel"
+        class="flex flex-row gap-x-2 overflow-hidden"
+        style="height: 60vh; overflow-y: hidden;"
+      >
         {% for product in products %}
         <a
           href="{% url 'single_product' product.id %}"
-          class="w-[98%] md:w-[70%] overflow-hidden rounded-md gap-x-2 no-scrollbar scroll-smooth h-[100%] flex-shrink-0"
+          class="w-[98%] md:w-[60%] overflow-hidden rounded-md gap-x-2 no-scrollbar scroll-smooth h-[100%] flex-shrink-0"
         >
           <img
             src="{{product.thumbnail.url}}"
             alt=""
-            class="w-full h-full object-cover"
+            class="w-[100%] h-[100%] object-cover"
           />
         </a>
         {% endfor %}
@@ -86,36 +92,41 @@ E-SOKO {% endblock title %} {% block content %}
     >
       All Categories Products
     </div>
-    {% if product_categories %} {% for category in product_categories %}
+    {% if product_categories %}
 
-    <div class="my-2">
-      {% if category.get_category_products %}
-      <p class="text-lg font-bold">{{category.name}}</p>
-      <div class="flex flex-row overflow-x-auto gap-x-2">
-        {% for product in category.get_category_products %}
-        <a
-          href="{% url 'single_product' product.id %}"
-          class="rounded-lg overflow-hidden flex-shrink-0 w-3/4 md:w-1/5 mx-1 border h-32 px-4 py-2 relative"
-          style="background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
-        >
-          <div
-            class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    <div class="" style="margin-top: 12vh;">
+      {% for category in product_categories %}
+
+      <div class="my-2">
+        {% if category.get_category_products %}
+        <p class="text-lg font-bold">{{category.name}}</p>
+        <div class="flex flex-row overflow-x-auto gap-x-2">
+          {% for product in category.get_category_products %}
+          <a
+            href="{% url 'single_product' product.id %}"
+            class="rounded-lg overflow-hidden flex-shrink-0 w-3/4 md:w-1/5 mx-1 border h-32 px-4 py-2 relative"
+            style="background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
           >
-            <p class="text-white">{{product.name}}</p>
-          </div>
-          {% if product.price %}
-          <div
-            class="absolute top-0 lef-1 z-10 bg-orange-400 text-white font-bold px-4 py-2 rounded-tr-xl rounded-bl-xl"
-          >
-            {{product.price}}
-          </div>
-          {% endif %}
-        </a>
-        {% endfor %}
+            <div
+              class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            >
+              <p class="text-white">{{product.name}}</p>
+            </div>
+            {% if product.price %}
+            <div
+              class="absolute top-0 lef-1 z-10 bg-orange-400 text-white font-bold px-4 py-2 rounded-tr-xl rounded-bl-xl"
+            >
+              {{product.price}}
+            </div>
+            {% endif %}
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
+      {% endfor %}
     </div>
-    {% endfor %} {% endif %}{% else %}
+    {% endif %}{% else %}
     <p>No Product Available</p>
     {% endif %}
   </div>

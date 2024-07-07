@@ -85,17 +85,18 @@
           data-aos="fade-right"
           data-aos-duration="2000"
           data-aos-delay="1500"
-          class="flex flex-col md:flex-row flex-wrap justify-center gap-3 w-[80%] mx-auto"
+          class="flex flex-col md:grid md:grid-cols-3 flex-wrap justify-center gap-3 w-[80%] mx-auto"
         >
           {% for product in products %}
           <a
             href="{% url 'single_product' product.id %}"
             class="rounded-lg overflow-hidden flex-1 hover:bg-slate-500 duration-500 ease-in-out transition-all"
+            style="height: 10vh;"
           >
             <img
               src="{{ product.thumbnail.url }}"
               alt="{{ product.name }}"
-              class="w-full h-full object-cover"
+              class="w-[100%] h-[100%] object-cover"
             />
           </a>
           {% endfor %}
