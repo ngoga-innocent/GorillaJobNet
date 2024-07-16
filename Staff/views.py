@@ -59,6 +59,15 @@ class Exam(View):
                  return JsonResponse({'status': False, 'message': "failed to save the exam try again"},status=200)
         except Faculties.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Faculity does not exist'}, status=200)
+def DeleteQuiz(request):
+    quiz_id=request.POST.get('quiz_id')
+    try:
+         quiz=Quiz.objects.get(id=quiz_id)
+         quiz.delete()
+    except Quiz.DoesNotExist:
+         return JsonResponse({"data":"Exam Does not exist"}, status=400);     
+    return JsonResponse({"data":"Request to Delete"},status=200);   
+               
 class Faculity(View):
     def get(self,request):
           faculities=Faculties.objects.all()
@@ -215,20 +224,65 @@ class AdvertiserView(View):
 class AdvertPostEdit(View):
      def get(self,request,id=None):
           if id is not None:
-                announcement=Announcement.objects.get(id=id)
-                form=AddProductForm(instance=announcement)
+                product=Product.objects.get(id=id)
+                form=AddProductForm(instance=product)
                 context={"form":form}
           else:
                 form=AddProductForm()
                 context={"form":form}      
           return render(request,'Advertisment/Add_product.html',context)
-     def post(self,request):
+     def post(self,request,id=None):
+          if id is not None:
+               print('you have to update the form')
           form=AddProductForm(request.POST,request.FILES)
           if form.is_valid():
                form.save()
                return redirect('staff_products')  
-          print(form)
+          
           return render(request,'Advertisment/Add_product.html',{'form':form}) 
+def duplicate_quiz_function(request):
+    #  print(request.POST)
+     exam_id=request.POST.get('exam_id')
+     copies_number=request.POST.get('copies_number')
+     copy_name=request.POST.get('name')
+     print(copy_name)
+    #  print(type(copies_number))
+     try:
+          exam=Quiz.objects.get(id=exam_id)
+          number_of_copy=1
+          while number_of_copy <= int(copies_number):
+               
+               new_copy_exam=Quiz(
+                    
+                    name=(copy_name or exam.name) + " " + str(number_of_copy),
+                    faculty=exam.faculty,
+                    number_of_questions=exam.number_of_questions,
+                    time=exam.time,
+                    required_score_to_pass=exam.required_score_to_pass
+               )
+               new_copy_exam.save()
+               exam_questions=exam.get_quiz_questions()
+               for question in exam_questions:
+                    new_question=Question(
+                         text=question.text,
+                         quiz=new_copy_exam
+                    )
+                    new_question.save()
+                    question_options=question.get_question_answer()
+                    for option in question_options:
+                         new_option=Answer(
+                              text=option.text,
+                              correct=option.correct,
+                              question=new_question
+                         )
+                         new_option.save()
+               number_of_copy =number_of_copy+ 1
+               
+
+
+     except Quiz.DoesNotExist:
+          return JsonResponse({"data":"exam not found"},status=400)     
+     return JsonResponse({"data":"Exam has been multiplied"},status=200)     
                
           
 

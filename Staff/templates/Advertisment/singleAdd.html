@@ -6,6 +6,12 @@
   >
     <!-- Product Image -->
     <div class="md:w-1/2 h-80 md:h-auto overflow-hidden">
+      <a
+        href="{% url 'staff_edit_product' product.id %}"
+        class="edit_product bg-orange-400 text-white font-bold py-1 px-3 rounded-md flex-1 mx-3 my-3"
+      >
+        Edit
+      </a>
       <img
         src="{{ product.thumbnail.url }}"
         alt="{{ product.name }}"

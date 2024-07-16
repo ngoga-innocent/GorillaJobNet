@@ -1,7 +1,26 @@
-{% extends 'staff_base.html' %} {% block Heading %} Exam {% endblock Heading %}
+{% extends 'staff_base.html' %} {% block custom_style %}
+<style>
+  .quiz_button_edit {
+    background-color: #10644d;
+  }
+  .quiz_button:hover,
+  .duplicate_button {
+    background-color: #10644d;
+    display: flex !important;
+  }
+  .duplicate_button {
+    display: none;
+  }
+  .modal {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+  }
+</style>
+{% endblock custom_style %} {% block Heading %} Exam {% endblock Heading %}
 <br />
 {% block content %}
-<div class="flex flex-col w-[100%]">
+<div class="flex flex-col flex-1" id="quiz">
   <button
     id="add_exam_button"
     class="self-end py-2 px-3 bg-[#10644D] text-white rounded-md"
@@ -9,18 +28,29 @@
     Add Exam
   </button>
   <div>
-    <h4 class="text-md font-bold">All Availble Exams</h4>
-    <div class="flex flex-row flex-wrap gap-2">
+    <h4 class="text-md font-bold">All Availbles Exams</h4>
+    <div class="flex flex-row flex-1 flex-wrap gap-2">
       {% for exam in exams %}
 
-      <button
-        data-quiz-id="{{ exam.id }}"
-        id="quiz_button_edit"
-        class="flex quiz_button_edit flex-col bg-white px-2 py-2 rounded-md w-[18%]"
+      <div
+        class="flex flex-row quiz_button w-[20%] items-center gap-x-2 border-2 border-black rounded-md py-1 px-3"
       >
-        <h4 class="text-md">{{exam.name}}</h4>
-        <!-- <p class="text-sm">{{exam.description}}</p> -->
-      </button>
+        <button
+          data-quiz-id="{{ exam.id }}"
+          id="quiz_button_edit"
+          class="flex quiz_button_edit flex-col px-2 py-2 rounded-md flex-1"
+        >
+          <h4 class="text-md text-white">{{exam.name}}</h4>
+        </button>
+        <button
+          data-quiz-id="{{exam.id}}"
+          class="bg-[#10644d] text-xs duplicate_button items-center text-white font-bold py-2 px-3 rounded-md"
+        >
+          Action
+        </button>
+      </div>
+      <!-- <p class="text-sm">{{exam.description}}</p> -->
+
       <div class="flex flex-col"></div>
 
       {% endfor %}
@@ -29,7 +59,7 @@
 </div>
 
 <!--   Add Exam Modal    -->
-<div id="modal-container" class="hidden exam_modal flex flex-col">
+<div id="modal-container" class="hidden exam_modal flex-col">
   <button
     id="close_modal"
     class="self-end bg-red-500 px-2 py-1 mx-6 rounded-lg"
@@ -108,4 +138,115 @@
     ></div>
   </div>
 </div>
-{% endblock content %}
+<!-- Duplicate Modal -->
+<div
+  class="duplicate_modal min-h-screen w-full hidden modal absolute top-0 items-center flex-col py-2 mx-3"
+>
+  <form class="delete_quiz">
+    {% csrf_token %}
+
+    <button
+      type="submit"
+      class="px-4 py-2 rounded-lg bg-red-500 text-white font-bold my-2 mx-3"
+    >
+      Delete This Exam
+    </button>
+  </form>
+  <form
+    id="duplicate_form"
+    class="duplicate_form self-center bg-white w-[50%] flex flex-col items-center justify-center py-3 px-3 rounded-xl"
+  >
+    {% csrf_token %}
+    <h4 class="text-primary py-2 px-4 rounded-md my-2">
+      Make Duplicates of This Exam?
+    </h4>
+    <input
+      required
+      type="number"
+      name="copy_number"
+      class="py-2 px-3 bg-slate-300 rounded-md my-2"
+      id="copy_number"
+      placeholder="Enter number of Copies"
+    />
+    <p class="text-xs text-slate-300">The Name is only option</p>
+    <input
+      type="text"
+      placeholder="Suggest The name of copy"
+      class="py-2 px-3 bg-slate-300 rounded-md my-2"
+      name="name"
+    />
+    <div class="flex flex-row items-center gap-x-2">
+      <button class="bg-[#10644D] py-2 px-4 rounded-md" type="submit">
+        Make Copy
+      </button>
+      <div
+        class="w-5 h-5 rounded-full border border-dashed animate-spin border-[#10644d] hidden spinner_animate"
+      ></div>
+    </div>
+  </form>
+</div>
+{% endblock content %} {% block Additional_Script %}
+<script>
+  $(".duplicate_button").on("click", function () {
+    $(".duplicate_modal").removeClass("hidden");
+    localStorage.setItem("exam_to_duplicate", $(this).attr("data-quiz-id"));
+  });
+
+  //Delete Quiz
+  $(".delete_quiz").on("submit", function (e) {
+    e.preventDefault();
+    const formData = $(this).serializeArray();
+    const quiz_id = localStorage.getItem("exam_to_duplicate");
+    const confirmation = confirm("Are you sure you want to delete this Quiz?");
+    if (confirmation) {
+      $.ajax({
+        url: "{% url 'delete_quiz' %}",
+        method: "POST",
+        data: {
+          csrfmiddlewaretoken: formData[0].value,
+          quiz_id: quiz_id,
+        },
+        success: function (data) {
+          console.log(data);
+          location.reload();
+        },
+        error: function (error) {
+          alert("error Happened to Delete Quiz");
+        },
+      });
+    } else {
+      $(".spinner_animate").removeClass("hidden");
+    }
+  });
+  //End Delete Quiz
+  $(".duplicate_form").on("submit", function (e) {
+    e.preventDefault();
+    $(".spinner_animate").removeClass("hidden");
+    const formData = $(this).serializeArray();
+    const exam_id = localStorage.getItem("exam_to_duplicate");
+
+    $.ajax({
+      url: "{% url 'staff_duplicate_quiz' %}",
+      method: "POST",
+      data: {
+        csrfmiddlewaretoken: formData[0].value,
+        copies_number: formData[1].value,
+        name: formData[2].value,
+        exam_id: exam_id,
+      },
+      success: function (data) {
+        //console.log(data);
+        location.reload();
+        $(".spinner_animate").removeClass("hidden");
+        $(".duplicate_modal").addClass("hidden");
+      },
+      error: function (error) {
+        alert("Error Happened in Multiplying a Quiz please try again");
+        location.reload();
+        $(".spinner_animate").removeClass("hidden");
+        $(".duplicate_modal").addClass("hidden");
+      },
+    });
+  });
+</script>
+{% endblock Additional_Script %}

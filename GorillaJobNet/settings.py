@@ -65,7 +65,7 @@ MIDDLEWARE = [
 
 STORAGES = {
     'default': {
-        # 'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
          'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
         'LOCATION': os.path.join(BASE_DIR, 'media'),
     },

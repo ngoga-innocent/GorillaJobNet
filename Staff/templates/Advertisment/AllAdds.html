@@ -1,24 +1,46 @@
-{% extends 'staff_base.html' %} {% block content %}
+{% extends 'staff_base.html' %} {% block content %} {% block custom_style %}
+<style>
+  .product:hover {
+    background-color: #10644d;
+  }
+</style>
+{% endblock custom_style %}
+
 <div class="grid grid-cols-4">
   {% for product in advertisments %}
-  <a
-    href="{% url 'staff_single_product' product.id %}"
-    class="rounded-lg overflow-hidden flex-shrink-0 mx-1 border h-32 px-4 py-2 relative"
-    style="background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
+  <div
+    class="product rounded-lg overflow-hidden flex-shrink-0 mx-1 border h-32 px-4 py-2 relative"
   >
-    <div
-      class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    <a
+      href="{% url 'staff_single_product' product.id %}"
+      class="flex-1"
+      style="background-image: url('{{product.thumbnail.url}}');background-position: center;background-size: cover;background-repeat: no-repeat;"
     >
-      <p class="text-white">{{product.name}}</p>
-    </div>
-    {% if product.price %}
-    <div
-      class="absolute top-0 lef-1 z-10 bg-orange-400 text-white font-bold px-4 py-2 rounded-tr-xl rounded-bl-xl"
-    >
-      {{product.price}}
-    </div>
-    {% endif %}
-  </a>
+      <div
+        class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+      >
+        <p class="text-white">{{product.name}}</p>
+      </div>
+      {% if product.price %}
+      <div
+        class="absolute top-0 lef-1 z-10 bg-orange-400 text-white font-bold px-4 py-2 rounded-tr-xl rounded-bl-xl"
+      >
+        {{product.price}}
+      </div>
+      {% endif %}
+    </a>
+  </div>
   {% endfor %}
 </div>
-{% endblock content %}
+{% endblock content %} {% block Additional_Script %}
+<script>
+  $(".edit_product").on("click", function () {
+    const product_id = $(this).attr("data-product-id");
+    console.log(product_id);
+    $.ajax({
+      method: "GET",
+      url: "/staff/editproduct/${product_id}",
+    });
+  });
+</script>
+{% endblock Additional_Script %}
