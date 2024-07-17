@@ -30,6 +30,8 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.created_at}"
+    class Meta:
+        ordering = ['-created_at']
 class Product_Esoko(models.Model):
     id=models.UUIDField(primary_key=True,editable=False,default=uuid.uuid4)
     title = models.CharField(max_length=255)
@@ -45,4 +47,6 @@ class Product_Esoko(models.Model):
     bought=models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.name} - {self.created_at}"    
+        return f"{self.name} - {self.created_at}"   
+    class Meta:
+        ordering = ['-created_at'] 
